@@ -20,16 +20,6 @@ const db = mysql.createPool({
     }
 });
 
-db.connect((err) => {
-
-    if (err) {
-        console.log("Government database connection failed");
-        console.log(err);
-    } else {
-        console.log("Government database connected");
-    }
-
-});
 
 
 // =====================================

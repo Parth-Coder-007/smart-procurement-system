@@ -19,16 +19,7 @@ const db = mysql.createPool({
         ca: process.env.DB_CA_CERT
     }
 });
-db.connect((err) => {
 
-    if (err) {
-        console.log("Database connection failed");
-        console.log(err);
-    } else {
-        console.log("Database connected");
-    }
-
-});
 
 
 // =====================================
