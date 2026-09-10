@@ -1,0 +1,1027 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+
+/* ================= TOP BAR ================= */
+
+.top-bar {
+    background: #17365d;
+    color: white;
+
+    display: flex;
+    justify-content: space-between;
+
+    padding: 7px 7%;
+
+    font-size: 13px;
+}
+
+
+/* ================= HEADER ================= */
+
+header {
+    background: white;
+
+    min-height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 15px 7%;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.emblem {
+    width: 58px;
+    height: 58px;
+
+    border: 2px solid #17365d;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 30px;
+}
+
+.logo-area h1 {
+    color: #17365d;
+    font-size: 27px;
+}
+
+.logo-area p {
+    color: #555;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.header-right {
+    color: #17365d;
+    font-size: 14px;
+}
+
+
+/* ================= NAV ================= */
+
+nav {
+    background: #17365d;
+
+    display: flex;
+
+    padding-left: 7%;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+
+    color: white;
+
+    padding: 16px 22px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: #0d2948;
+}
+
+
+/* ================= MAIN ================= */
+
+main {
+    width: 86%;
+    max-width: 1250px;
+
+    margin: 30px auto;
+
+    min-height: 600px;
+}
+
+.page {
+    display: none;
+}
+
+.active-page {
+    display: block;
+}
+
+
+/* ================= TITLE ================= */
+
+.page-title {
+    margin-bottom: 25px;
+}
+
+.page-title h2 {
+    color: #17365d;
+    font-size: 27px;
+
+    border-left: 5px solid #e5a100;
+
+    padding-left: 12px;
+}
+
+.page-title p {
+    color: #666;
+    margin-top: 8px;
+}
+
+
+/* ================= NOTICE ================= */
+
+.notice {
+    background: #fff8e5;
+
+    border: 1px solid #e5c46b;
+
+    border-left: 5px solid #e5a100;
+
+    padding: 15px;
+
+    margin-bottom: 30px;
+
+    font-size: 14px;
+}
+
+
+/* ================= SERVICE CARDS ================= */
+
+.service-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+.service-card {
+    background: white;
+
+    border: 1px solid #d8dde3;
+
+    padding: 28px;
+
+    min-height: 260px;
+
+    text-align: center;
+}
+
+.service-icon {
+    font-size: 38px;
+    margin-bottom: 15px;
+}
+
+.service-card h3 {
+    color: #17365d;
+
+    margin-bottom: 12px;
+}
+
+.service-card p {
+    color: #666;
+
+    line-height: 1.6;
+
+    font-size: 14px;
+
+    min-height: 70px;
+}
+
+.service-card button,
+.primary-btn {
+    background: #17365d;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 22px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+.service-card button:hover,
+.primary-btn:hover {
+    background: #0d2948;
+}
+
+
+/* ================= HOW IT WORKS ================= */
+
+.info-section {
+    background: white;
+
+    border: 1px solid #ddd;
+
+    margin-top: 30px;
+
+    padding: 25px;
+}
+
+.info-section h3 {
+    color: #17365d;
+
+    margin-bottom: 25px;
+}
+
+.how-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 20px;
+}
+
+.how-grid div {
+    text-align: center;
+}
+
+.how-grid span {
+    display: flex;
+
+    margin: auto auto 12px;
+
+    width: 38px;
+    height: 38px;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #17365d;
+
+    color: white;
+
+    border-radius: 50%;
+}
+
+.how-grid h4 {
+    margin-bottom: 7px;
+}
+
+.how-grid p {
+    color: #666;
+    font-size: 13px;
+}
+
+
+/* ================= FORM ================= */
+
+.form-card {
+    background: white;
+
+    border: 1px solid #d5dbe1;
+}
+
+.form-heading {
+    background: #eef2f6;
+
+    border-bottom: 1px solid #d5dbe1;
+
+    padding: 18px 25px;
+}
+
+.form-heading h3 {
+    color: #17365d;
+}
+
+.form-heading p {
+    color: #666;
+
+    font-size: 13px;
+
+    margin-top: 5px;
+}
+
+form {
+    padding: 25px;
+}
+
+.form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 25px;
+
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+
+    font-size: 14px;
+
+    margin-bottom: 8px;
+}
+
+.form-group label span {
+    color: #c40000;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px;
+
+    border: 1px solid #aaa;
+
+    background: white;
+
+    font-size: 14px;
+
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #17365d;
+}
+
+.form-footer {
+    border-top: 1px solid #ddd;
+
+    padding-top: 20px;
+
+    margin-top: 10px;
+
+    text-align: right;
+}
+
+
+/* ================= SLOT MESSAGE ================= */
+
+.slot-message {
+    background: #eef6ee;
+
+    border: 1px solid #a7c8a7;
+
+    color: #245b24;
+
+    padding: 13px;
+
+    font-size: 14px;
+
+    margin-bottom: 20px;
+}
+
+
+/* ================= TOKEN ================= */
+
+.token-card {
+    background: white;
+
+    border: 1px solid #b9c9b9;
+
+    margin-top: 25px;
+
+    padding: 30px;
+
+    text-align: center;
+}
+
+.success-icon {
+    background: #277a3e;
+
+    color: white;
+
+    width: 50px;
+    height: 50px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: auto;
+
+    font-size: 28px;
+}
+
+.token-card h2 {
+    color: #277a3e;
+
+    margin-top: 15px;
+}
+
+.token-card > p {
+    color: #666;
+
+    margin: 8px 0 25px;
+}
+
+.token-number {
+    background: #f1f4f7;
+
+    border: 1px dashed #17365d;
+
+    padding: 20px;
+
+    margin-bottom: 25px;
+}
+
+.token-number small {
+    display: block;
+
+    color: #666;
+
+    margin-bottom: 8px;
+}
+
+.token-number strong {
+    color: #17365d;
+
+    font-size: 35px;
+
+    letter-spacing: 2px;
+}
+
+.token-details,
+.queue-info-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.token-details div,
+.queue-info-grid div {
+    border: 1px solid #ddd;
+
+    padding: 15px;
+}
+
+.token-details span,
+.queue-info-grid span {
+    display: block;
+
+    color: #777;
+
+    font-size: 12px;
+
+    margin-bottom: 7px;
+}
+
+.secondary-btn {
+    background: white;
+
+    color: #17365d;
+
+    border: 1px solid #17365d;
+
+    padding: 11px 22px;
+
+    cursor: pointer;
+}
+
+
+/* ================= QUEUE ================= */
+
+.empty-card {
+    background: white;
+
+    border: 1px solid #ddd;
+
+    text-align: center;
+
+    padding: 60px 20px;
+}
+
+.empty-card > div {
+    font-size: 40px;
+
+    margin-bottom: 15px;
+}
+
+.empty-card h3 {
+    color: #17365d;
+
+    margin-bottom: 10px;
+}
+
+.empty-card p {
+    color: #666;
+
+    margin-bottom: 20px;
+}
+
+.queue-container {
+    background: white;
+
+    border: 1px solid #d5dbe1;
+}
+
+.queue-header,
+.status-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: #eef2f6;
+
+    padding: 20px 25px;
+
+    border-bottom: 1px solid #d5dbe1;
+}
+
+.label {
+    color: #777;
+
+    font-size: 12px;
+}
+
+.queue-header h2,
+.status-header h2 {
+    color: #17365d;
+
+    margin-top: 5px;
+}
+
+.queue-status,
+.active-badge {
+    background: #e3f2e7;
+
+    color: #236b37;
+
+    padding: 8px 13px;
+
+    font-size: 13px;
+}
+
+.queue-main {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    padding: 35px;
+
+    text-align: center;
+
+    gap: 30px;
+}
+
+.queue-position,
+.estimated {
+    border-right: 1px solid #ddd;
+
+    padding: 10px;
+}
+
+.estimated {
+    border: none;
+}
+
+.queue-position span,
+.estimated span {
+    display: block;
+
+    color: #666;
+
+    margin-bottom: 8px;
+}
+
+.queue-position strong {
+    font-size: 55px;
+
+    color: #17365d;
+
+    display: block;
+}
+
+.estimated strong {
+    font-size: 32px;
+
+    color: #277a3e;
+
+    display: block;
+
+    margin: 10px;
+}
+
+.queue-position small,
+.estimated small {
+    color: #777;
+}
+
+.queue-bar {
+    height: 12px;
+
+    background: #e3e7eb;
+
+    margin: 0 35px;
+
+    overflow: hidden;
+}
+
+.queue-progress {
+    height: 100%;
+
+    width: 50%;
+
+    background: #277a3e;
+}
+
+.queue-message {
+    margin: 25px 35px;
+
+    background: #fff8e5;
+
+    border-left: 5px solid #e5a100;
+
+    padding: 15px;
+}
+
+.queue-message p {
+    color: #666;
+
+    margin-top: 6px;
+
+    font-size: 14px;
+}
+
+.queue-info-grid {
+    padding: 0 35px 30px;
+
+    margin-bottom: 0;
+}
+
+
+/* ================= PROCESS STATUS ================= */
+
+.status-card {
+    background: white;
+
+    border: 1px solid #d5dbe1;
+}
+
+.process-tracker {
+    display: flex;
+
+    align-items: center;
+
+    padding: 50px 35px 35px;
+}
+
+.process-step {
+    flex: 1;
+
+    text-align: center;
+
+    position: relative;
+}
+
+.circle {
+    width: 45px;
+    height: 45px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    border: 3px solid #adb5bd;
+
+    background: white;
+
+    color: #777;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.process-step.completed .circle {
+    background: #277a3e;
+
+    border-color: #277a3e;
+
+    color: white;
+}
+
+.process-step strong {
+    display: block;
+
+    margin-top: 12px;
+
+    font-size: 13px;
+
+    color: #444;
+}
+
+.process-step small {
+    display: block;
+
+    color: #888;
+
+    margin-top: 5px;
+
+    font-size: 12px;
+}
+
+.process-line {
+    height: 4px;
+
+    background: #cbd1d6;
+
+    flex: 1;
+
+    margin-top: -38px;
+}
+
+.process-step.completed + .process-line {
+    background: #277a3e;
+}
+
+.status-note {
+    margin: 0 35px 30px;
+
+    padding: 15px;
+
+    background: #eef6ee;
+
+    border: 1px solid #b8d2b8;
+
+    color: #245b24;
+}
+
+.status-note span {
+    margin-left: 5px;
+}
+
+
+/* ================= FOOTER ================= */
+
+footer {
+    background: #17365d;
+
+    color: white;
+
+    padding: 25px 7%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    font-size: 13px;
+}
+
+footer p {
+    margin-top: 5px;
+
+    opacity: 0.85;
+}
+
+
+/* ================= UTILITIES ================= */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 800px) {
+
+    .top-bar {
+        flex-direction: column;
+
+        gap: 5px;
+
+        padding: 8px 5%;
+    }
+
+    header {
+        padding: 15px 5%;
+    }
+
+    .header-right {
+        display: none;
+    }
+
+    nav {
+        padding-left: 0;
+
+        overflow-x: auto;
+    }
+
+    .nav-btn {
+        white-space: nowrap;
+
+        padding: 14px;
+    }
+
+    main {
+        width: 94%;
+
+        margin: 20px auto;
+    }
+
+    .service-grid,
+    .how-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .token-details,
+    .queue-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .queue-main {
+        grid-template-columns: 1fr;
+    }
+
+    .queue-position {
+        border-right: none;
+
+        border-bottom: 1px solid #ddd;
+    }
+
+    .process-tracker {
+        flex-direction: column;
+
+        gap: 0;
+    }
+
+    .process-line {
+        width: 4px;
+
+        height: 45px;
+
+        margin: 0;
+    }
+
+    .process-step {
+        width: 100%;
+    }
+
+    footer {
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+}/* =========================================
+   FARMER PROFILE CARD
+========================================= */
+
+.farmer-profile {
+    background: #ffffff;
+    border: 1px solid #d9e1ea;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 22px 0 28px;
+    max-width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Profile heading */
+.farmer-profile h3 {
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e5eaf0;
+
+    font-size: 22px;
+    color: #173b68;
+    font-weight: 700;
+}
+
+/* Profile information layout */
+.farmer-profile p {
+    display: inline-flex;
+    align-items: center;
+
+    width: 31%;
+    min-width: 250px;
+
+    margin: 0 1.5% 14px 0;
+    padding: 12px 15px;
+
+    background: #f7f9fc;
+    border: 1px solid #e3e8ee;
+    border-radius: 8px;
+
+    font-size: 15px;
+    color: #333;
+}
+
+/* Labels */
+.farmer-profile p strong {
+    color: #173b68;
+    margin-right: 6px;
+}
+
+/* Values */
+.farmer-profile p span {
+    color: #444;
+    font-weight: 500;
+}
+
+/* Hover effect */
+.farmer-profile p:hover {
+    background: #eef4fa;
+    border-color: #c8d6e5;
+    transform: translateY(-1px);
+    transition: 0.2s ease;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .farmer-profile p {
+        width: 46%;
+        min-width: 0;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .farmer-profile {
+        padding: 18px;
+    }
+
+    .farmer-profile p {
+        width: 100%;
+        margin-right: 0;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .logo-area h1 {
+        font-size: 22px;
+    }
+
+    .logo-area p {
+        font-size: 11px;
+    }
+
+    .emblem {
+        width: 45px;
+        height: 45px;
+
+        font-size: 23px;
+    }
+
+    .token-details,
+    .queue-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .queue-main {
+        padding: 25px 15px;
+    }
+
+}

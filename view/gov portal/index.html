@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Khetsetu - Dashboard</title>
+
+    <link rel="stylesheet" href="/gov%20css/style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>🌾</span>
+
+            <div>
+                <h2>Khetsetu</h2>
+                <p>Government Portal</p>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+
+            <a href="/gov" class="nav-link">
+                <span class="icon">▣</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/gov/queue" class="nav-link">
+                <span class="icon">⇄</span>
+                <span>Queue</span>
+            </a>
+
+            <a href="/gov/farmers" class="nav-link">
+                <span class="icon">♙</span>
+                <span>Farmers</span>
+            </a>
+
+            <a href="/gov/procurement" class="nav-link">
+                <span class="icon">▤</span>
+                <span>Procurement</span>
+            </a>
+
+            <a href="/gov/settings" class="nav-link">
+                <span class="icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <button class="logout-btn"
+                onclick="window.location.href='/gov/logout'">
+
+                <span class="icon">↪</span>
+                <span>Logout</span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- HEADER -->
+        <header class="header">
+
+            <div class="page-title">
+
+                <h1>Dashboard</h1>
+
+                <p>Procurement Centre Management</p>
+
+            </div>
+
+
+            <div class="header-right">
+
+                <button class="notification">
+                    🔔
+                    <span class="notification-dot"></span>
+                </button>
+
+
+                <div class="profile">
+
+                    <div class="profile-image" id="profileInitial">
+                        G
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong id="officerName">
+                            Government Officer
+                        </strong>
+
+                        <span>
+                            Procurement Officer
+                        </span>
+
+                    </div>
+
+                    <span class="arrow">⌄</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+        <section class="content">
+
+            <h2 id="greeting">
+                Good Morning, Officer 👋
+            </h2>
+
+            <p class="content-subtitle">
+                Here's what's happening at your procurement centre today.
+            </p>
+
+
+            <!-- STAT CARDS -->
+            <div class="stats-grid">
+
+
+                <!-- FARMERS TODAY -->
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <p>Farmers Today</p>
+
+                        <h3 id="farmersToday">
+                            0
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CURRENTLY WAITING -->
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ⏳
+                    </div>
+
+                    <div>
+
+                        <p>Currently Waiting</p>
+
+                        <h3 id="currentlyWaiting">
+                            0
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <!-- COMPLETED -->
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <p>Completed</p>
+
+                        <h3 id="completed">
+                            0
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REMAINING -->
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        ▣
+                    </div>
+
+                    <div>
+
+                        <p>Remaining</p>
+
+                        <h3 id="remaining">
+                            0
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD GRID -->
+            <div class="dashboard-grid">
+
+
+                <!-- CURRENT QUEUE -->
+                <div class="queue-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h3>
+                                Current Queue
+                            </h3>
+
+                            <p>
+                                Current procurement activity
+                            </p>
+
+                        </div>
+
+                        <span class="status-badge">
+                            ● Live
+                        </span>
+
+                    </div>
+
+
+                    <div class="current-token">
+
+                        <p>
+                            Currently Serving
+                        </p>
+
+                        <h2 id="currentToken">
+                            -
+                        </h2>
+
+
+                        <div class="farmer-info">
+
+                            <strong id="currentFarmer">
+                                No farmer waiting
+                            </strong>
+
+                            <span id="currentCrop">
+                                -
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="queue-actions">
+
+                        <a href="/gov/queue"
+                            class="secondary-btn">
+
+                            View Queue
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CENTRE STATUS -->
+                <div class="centre-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h3>
+                                Centre Status
+                            </h3>
+
+                            <p>
+                                Current centre activity
+                            </p>
+
+                        </div>
+
+                        <span class="operational">
+                            ● Operational
+                        </span>
+
+                    </div>
+
+
+                    <!-- ACTIVE COUNTERS -->
+                    <div class="centre-stat">
+
+                        <span>
+                            Active Counters
+                        </span>
+
+                        <strong id="activeCounters">
+                            3 / 4
+                        </strong>
+
+                    </div>
+
+
+                    <!-- FARMERS TODAY -->
+                    <div class="centre-stat">
+
+                        <span>
+                            Farmers Today
+                        </span>
+
+                        <strong id="centreFarmersToday">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <!-- COMPLETED -->
+                    <div class="centre-stat">
+
+                        <span>
+                            Completed
+                        </span>
+
+                        <strong id="centreCompleted">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <!-- CAPACITY -->
+                    <div class="centre-stat">
+
+                        <span>
+                            Capacity
+                        </span>
+
+                        <strong id="centreCapacity">
+                            0%
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        // ==========================================
+        // LOAD ACTIVE COUNTERS FROM SETTINGS
+        // ==========================================
+
+        function loadActiveCounters() {
+
+            const savedCounters =
+                localStorage.getItem("activeCounters");
+
+            // Default value = 3
+            const activeCounters =
+                savedCounters !== null
+                    ? savedCounters
+                    : 3;
+
+            document.getElementById("activeCounters").textContent =
+                activeCounters + " / 4";
+        }
+
+
+
+        // ==========================================
+        // LOAD GOVERNMENT DASHBOARD
+        // ==========================================
+
+        async function loadDashboard() {
+
+            try {
+
+                const response =
+                    await fetch('/gov/api/dashboard');
+
+
+                // If session expired
+                if (!response.ok) {
+
+                    if (response.status === 401) {
+
+                        window.location.href =
+                            '/gov/login';
+
+                        return;
+                    }
+
+                    throw new Error(
+                        'Failed to load dashboard'
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+
+                // ==========================================
+                // STAT CARDS
+                // ==========================================
+
+                document.getElementById(
+                    'farmersToday'
+                ).textContent =
+                    data.farmersToday || 0;
+
+
+                document.getElementById(
+                    'currentlyWaiting'
+                ).textContent =
+                    data.currentlyWaiting || 0;
+
+
+                document.getElementById(
+                    'completed'
+                ).textContent =
+                    data.completed || 0;
+
+
+                document.getElementById(
+                    'remaining'
+                ).textContent =
+                    data.remaining || 0;
+
+
+
+                // ==========================================
+                // CENTRE STATUS
+                // ==========================================
+
+                document.getElementById(
+                    'centreFarmersToday'
+                ).textContent =
+                    data.farmersToday || 0;
+
+
+                document.getElementById(
+                    'centreCompleted'
+                ).textContent =
+                    data.completed || 0;
+
+
+
+                // ==========================================
+                // CAPACITY
+                // ==========================================
+
+                const capacity =
+                    Math.min(
+                        ((data.farmersToday || 0) / 300) * 100,
+                        100
+                    );
+
+
+                document.getElementById(
+                    'centreCapacity'
+                ).textContent =
+                    Math.round(capacity) + '%';
+
+
+
+                // ==========================================
+                // CURRENT QUEUE
+                // ==========================================
+
+                const queue =
+                    data.currentQueue;
+
+
+                if (queue) {
+
+                    document.getElementById(
+                        'currentToken'
+                    ).textContent =
+                        '#' + queue.token;
+
+
+                    document.getElementById(
+                        'currentFarmer'
+                    ).textContent =
+                        queue.name;
+
+
+                    document.getElementById(
+                        'currentCrop'
+                    ).textContent =
+                        queue.crop_type +
+                        ' • ' +
+                        Number(
+                            queue.product_weight
+                        ).toLocaleString() +
+                        ' kg';
+
+                }
+
+                else {
+
+                    document.getElementById(
+                        'currentToken'
+                    ).textContent =
+                        '-';
+
+
+                    document.getElementById(
+                        'currentFarmer'
+                    ).textContent =
+                        'No farmer waiting';
+
+
+                    document.getElementById(
+                        'currentCrop'
+                    ).textContent =
+                        'Queue is currently empty';
+
+                }
+
+
+
+                // ==========================================
+                // OFFICER NAME
+                // ==========================================
+
+                if (data.officerName) {
+
+                    document.getElementById(
+                        'officerName'
+                    ).textContent =
+                        data.officerName;
+
+
+                    document.getElementById(
+                        'profileInitial'
+                    ).textContent =
+                        data.officerName
+                            .charAt(0)
+                            .toUpperCase();
+
+                }
+
+
+
+                // ==========================================
+                // GREETING
+                // ==========================================
+
+                const hour =
+                    new Date().getHours();
+
+
+                let greeting =
+                    'Good Morning';
+
+
+                if (
+                    hour >= 12 &&
+                    hour < 17
+                ) {
+
+                    greeting =
+                        'Good Afternoon';
+
+                }
+
+                else if (
+                    hour >= 17
+                ) {
+
+                    greeting =
+                        'Good Evening';
+
+                }
+
+
+                document.getElementById(
+                    'greeting'
+                ).textContent =
+                    greeting +
+                    ', Officer 👋';
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    'Dashboard loading error:',
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // LOAD DATA WHEN PAGE OPENS
+        // ==========================================
+
+        window.addEventListener(
+            'load',
+            function () {
+
+                loadActiveCounters();
+
+                loadDashboard();
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

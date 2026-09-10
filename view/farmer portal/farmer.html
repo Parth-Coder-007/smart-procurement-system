@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KhetSetu - Farmer Portal</title>
+
+    <link rel="stylesheet" href="/farmer%20portal/farmer.css">
+</head>
+
+<body>
+
+    <!-- TOP GOVERNMENT BAR -->
+    <div class="top-bar">
+        <div>Government of Maharashtra</div>
+        <div>कृषी विभाग | Agriculture Department</div>
+    </div>
+
+
+    <!-- HEADER -->
+    <header>
+
+        <div class="logo-area">
+            <div class="emblem">🌾</div>
+
+            <div>
+                <h1>KhetSetu</h1>
+                <p>Farmer Procurement & Queue Management Portal</p>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <span>मराठी</span>
+            <span>|</span>
+            <span>English</span>
+        </div>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+    <nav>
+
+        <button class="nav-btn active" onclick="showPage('home', this)">
+            Home
+        </button>
+
+        <button class="nav-btn" onclick="showPage('registration', this)">
+            Registration
+        </button>
+
+        <button class="nav-btn" onclick="showPage('queue', this)">
+            Queue Management
+        </button>
+
+        <button class="nav-btn" onclick="showPage('status', this)">
+            Process Status
+        </button>
+
+    </nav>
+
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+
+        <!-- ================= HOME ================= -->
+
+        <section id="home" class="page active-page">
+
+            <div class="page-title">
+                <h2>Farmer Portal</h2>
+                <p>Welcome to KhetSetu Farmer Services</p>
+            </div>
+
+
+            <!-- FARMER PROFILE -->
+
+            <div class="farmer-profile">
+
+                <h3>Farmer Profile</h3>
+
+                <p>
+                    <strong>Farmer ID:</strong>
+                    <span id="farmerId">Loading...</span>
+                </p>
+
+                <p>
+                    <strong>Name:</strong>
+                    <span id="farmerName">Loading...</span>
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    <span id="farmerEmail">Loading...</span>
+                </p>
+
+                <p>
+                    <strong>Mobile:</strong>
+                    <span id="farmerMobile">Loading...</span>
+                </p>
+
+                <p>
+                    <strong>District:</strong>
+                    <span id="farmerDistrict">Loading...</span>
+                </p>
+
+                <p>
+                    <strong>Village:</strong>
+                    <span id="farmerVillage">Loading...</span>
+                </p>
+
+                <p>
+                    <strong>Land Area:</strong>
+                    <span id="farmerLandArea">Loading...</span>
+                </p>
+
+            </div>
+
+
+            <div class="notice">
+
+                <strong>Important Notice:</strong>
+
+                Farmers are requested to register their crop and select
+                a suitable procurement centre and time slot.
+
+            </div>
+
+
+            <div class="service-grid">
+
+
+                <!-- REGISTRATION -->
+
+                <div class="service-card">
+
+                    <div class="service-icon">📝</div>
+
+                    <h3>Registration</h3>
+
+                    <p>
+                        Register your crop, product weight and select
+                        your preferred procurement centre and time slot.
+                    </p>
+
+                    <button onclick="openPage('registration')">
+                        Start Registration
+                    </button>
+
+                </div>
+
+
+                <!-- QUEUE -->
+
+                <div class="service-card">
+
+                    <div class="service-icon">👥</div>
+
+                    <h3>Queue Management</h3>
+
+                    <p>
+                        Check your token number, queue position and
+                        estimated centre visit time.
+                    </p>
+
+                    <button onclick="openPage('queue')">
+                        View Queue
+                    </button>
+
+                </div>
+
+
+                <!-- PROCESS STATUS -->
+
+                <div class="service-card">
+
+                    <div class="service-icon">📋</div>
+
+                    <h3>Process Status</h3>
+
+                    <p>
+                        Track your application from registration
+                        to successful payment.
+                    </p>
+
+                    <button onclick="openPage('status')">
+                        View Status
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-section">
+
+                <h3>How KhetSetu Works</h3>
+
+                <div class="how-grid">
+
+                    <div>
+                        <span>1</span>
+                        <h4>Register</h4>
+                        <p>Select centre, crop and time slot.</p>
+                    </div>
+
+                    <div>
+                        <span>2</span>
+                        <h4>Get Token</h4>
+                        <p>Receive your queue token.</p>
+                    </div>
+
+                    <div>
+                        <span>3</span>
+                        <h4>Visit Centre</h4>
+                        <p>Visit the centre at your estimated time.</p>
+                    </div>
+
+                    <div>
+                        <span>4</span>
+                        <h4>Get Payment</h4>
+                        <p>Track successful payment.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= REGISTRATION ================= -->
+
+        <section id="registration" class="page">
+
+            <div class="page-title">
+
+                <h2>Farmer Registration</h2>
+
+                <p>
+                    Register your crop and request a procurement centre slot.
+                </p>
+
+            </div>
+
+
+            <div class="form-card">
+
+                <div class="form-heading">
+
+                    <h3>Registration Details</h3>
+
+                    <p>Fields marked with * are mandatory.</p>
+
+                </div>
+
+
+                <form
+                    id="registrationForm"
+                    action="/farmer/register"
+                    method="POST"
+                >
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label>
+                                District <span>*</span>
+                            </label>
+
+                            <select
+                                id="district"
+                                name="district"
+                                required
+                            >
+
+                                <option value="">
+                                    Select District
+                                </option>
+
+                                <option value="mumbai">
+                                    Mumbai
+                                </option>
+
+                                <option value="thane">
+                                    Thane
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Procurement Centre <span>*</span>
+                            </label>
+
+                            <select
+                                id="centre"
+                                name="procurement_centre"
+                                required
+                            >
+
+                                <option value="">
+                                    Select District First
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Crop Type <span>*</span>
+                            </label>
+
+                            <select
+                                id="crop"
+                                name="crop_type"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Crop
+                                </option>
+
+                                <option>Rice</option>
+                                <option>Wheat</option>
+                                <option>Jowar</option>
+                                <option>Bajra</option>
+                                <option>Tur</option>
+                                <option>Gram</option>
+                                <option>Soybean</option>
+                                <option>Other</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Approximate Product Weight (kg)
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="weight"
+                                name="product_weight"
+                                min="1"
+                                placeholder="Enter weight in kg"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Preferred Date <span>*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="date"
+                                name="preferred_date"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Time Slot <span>*</span>
+                            </label>
+
+                            <select
+                                id="slot"
+                                name="time_slot"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Time Slot
+                                </option>
+
+                                <option value="10:00 AM - 11:00 AM">
+                                    10:00 AM - 11:00 AM
+                                </option>
+
+                                <option value="11:00 AM - 12:00 PM">
+                                    11:00 AM - 12:00 PM
+                                </option>
+
+                                <option value="12:00 PM - 01:00 PM">
+                                    12:00 PM - 01:00 PM
+                                </option>
+
+                                <option value="02:00 PM - 03:00 PM">
+                                    02:00 PM - 03:00 PM
+                                </option>
+
+                                <option value="03:00 PM - 04:00 PM">
+                                    03:00 PM - 04:00 PM
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SLOT STATUS -->
+
+                    <div id="slotMessage" class="slot-message">
+
+                        Select a centre, date and time slot to check availability.
+
+                    </div>
+
+
+                    <div class="form-footer">
+
+                        <button
+                            type="submit"
+                            class="primary-btn"
+                        >
+                            Register your crop
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- TOKEN RESULT -->
+
+            <div
+                id="tokenResult"
+                class="token-card hidden"
+            >
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <h2>Registration Successful</h2>
+
+                <p>
+                    Your queue registration has been successfully created.
+                </p>
+
+
+                <div class="token-number">
+
+                    <small>YOUR TOKEN NUMBER</small>
+
+                    <strong id="tokenNumber">
+                        KS-0000
+                    </strong>
+
+                </div>
+
+
+                <div class="token-details">
+
+                    <div>
+                        <span>Centre</span>
+                        <strong id="resultCentre">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Crop</span>
+                        <strong id="resultCrop">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Weight</span>
+                        <strong id="resultWeight">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Time Slot</span>
+                        <strong id="resultSlot">-</strong>
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="secondary-btn"
+                    onclick="openPage('queue')"
+                >
+                    View My Queue
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= QUEUE ================= -->
+
+        <section id="queue" class="page">
+
+            <div class="page-title">
+
+                <h2>Queue Management</h2>
+
+                <p>
+                    View your current queue position and estimated visit time.
+                </p>
+
+            </div>
+
+
+            <div
+                id="noQueue"
+                class="empty-card"
+            >
+
+                <div>👥</div>
+
+                <h3>No Active Queue Registration</h3>
+
+                <p>
+                    Please complete registration to receive a queue token.
+                </p>
+
+                <button
+                    class="primary-btn"
+                    onclick="openPage('registration')"
+                >
+                    Register Now
+                </button>
+
+            </div>
+
+
+            <div
+                id="queueDetails"
+                class="queue-container hidden"
+            >
+
+                <div class="queue-header">
+
+                    <div>
+
+                        <span class="label">
+                            YOUR TOKEN
+                        </span>
+
+                        <h2 id="queueToken">
+                            KS-0000
+                        </h2>
+
+                    </div>
+
+                    <div class="queue-status">
+                        Registration Confirmed
+                    </div>
+
+                </div>
+
+
+                <div class="queue-main">
+
+                    <div class="queue-position">
+
+                        <span>Your Position</span>
+
+                        <strong id="position">
+                            4
+                        </strong>
+
+                        <small>
+                            out of
+                            <span id="totalPeople">8</span>
+                            people
+                        </small>
+
+                    </div>
+
+
+                    <div class="estimated">
+
+                        <span>Estimated Centre Visit</span>
+
+                        <strong id="estimatedTime">
+                            10:30 AM
+                        </strong>
+
+                        <small id="queueSlot">
+                            10:00 AM - 11:00 AM
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="queue-bar">
+
+                    <div class="queue-progress"></div>
+
+                </div>
+
+
+                <div class="queue-message">
+
+                    <strong>
+                        Please wait for your turn.
+                    </strong>
+
+                    <p>
+                        You are currently 4th in the queue.
+                        Please reach the centre around your estimated time.
+                    </p>
+
+                </div>
+
+
+                <div class="queue-info-grid">
+
+                    <div>
+                        <span>District</span>
+                        <strong id="queueDistrict">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Centre</span>
+                        <strong id="queueCentre">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Crop</span>
+                        <strong id="queueCrop">-</strong>
+                    </div>
+
+                    <div>
+                        <span>Weight</span>
+                        <strong id="queueWeight">-</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= STATUS ================= -->
+
+        <section id="status" class="page">
+
+            <div class="page-title">
+
+                <h2>Process Status</h2>
+
+                <p>
+                    Track the progress of your procurement process.
+                </p>
+
+            </div>
+
+
+            <!-- NO REGISTRATION -->
+
+            <div
+                id="statusEmpty"
+                class="empty-card"
+            >
+
+                <div>📋</div>
+
+                <h3>No Active Registration</h3>
+
+                <p>
+                    Register your crop to track the process.
+                </p>
+
+                <button
+                    class="primary-btn"
+                    onclick="openPage('registration')"
+                >
+                    Register Now
+                </button>
+
+            </div>
+
+
+            <!-- PROCESS STATUS -->
+
+            <div
+                id="statusCard"
+                class="status-card hidden"
+            >
+
+                <div class="status-header">
+
+                    <div>
+
+                        <span class="label">
+                            TOKEN NUMBER
+                        </span>
+
+                        <h2 id="statusToken">
+                            KS-0000
+                        </h2>
+
+                    </div>
+
+                    <span class="active-badge">
+                        Active
+                    </span>
+
+                </div>
+
+
+                <!-- PROCESS TRACKER -->
+
+                <div class="process-tracker">
+
+                    <div class="process-step completed">
+
+                        <div class="circle">
+                            ✓
+                        </div>
+
+                        <strong>Registration</strong>
+
+                        <small>Completed</small>
+
+                    </div>
+
+
+                    <div class="process-line"></div>
+
+
+                    <div class="process-step">
+
+                        <div class="circle">
+                            2
+                        </div>
+
+                        <strong>Centre Visit</strong>
+
+                        <small>Pending</small>
+
+                    </div>
+
+
+                    <div class="process-line"></div>
+
+
+                    <div class="process-step">
+
+                        <div class="circle">
+                            3
+                        </div>
+
+                        <strong>Deal Completed</strong>
+
+                        <small>Pending</small>
+
+                    </div>
+
+
+                    <div class="process-line"></div>
+
+
+                    <div class="process-step">
+
+                        <div class="circle">
+                            4
+                        </div>
+
+                        <strong>Payment Successful</strong>
+
+                        <small>Pending</small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="status-note">
+
+                    <strong>Current Status:</strong>
+
+                    <span id="currentStatus">
+                        Registration completed.
+                        Awaiting centre visit.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= PROCUREMENT DETAILS ================= -->
+
+            <div
+                id="procurementCard"
+                class="status-card hidden"
+                style="margin-top: 25px;"
+            >
+
+                <div class="status-header">
+
+                    <div>
+
+                        <span class="label">
+                            PROCUREMENT DETAILS
+                        </span>
+
+                        <h2>
+                            My Procurement
+                        </h2>
+
+                    </div>
+
+                    <span
+                        id="procurementStatusBadge"
+                        class="active-badge"
+                    >
+                        Processing
+                    </span>
+
+                </div>
+
+
+                <!-- PROCUREMENT INFORMATION -->
+
+                <div class="queue-info-grid">
+
+                    <div>
+
+                        <span>Token</span>
+
+                        <strong id="procurementToken">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Crop</span>
+
+                        <strong id="procurementCrop">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Quantity</span>
+
+                        <strong id="procurementQuantity">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Accepted Quantity</span>
+
+                        <strong id="procurementAccepted">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Quality</span>
+
+                        <strong id="procurementQuality">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Test Result</span>
+
+                        <strong id="procurementTest">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Rate / Kg</span>
+
+                        <strong id="procurementRate">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Total Amount</span>
+
+                        <strong id="procurementAmount">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Payment Status</span>
+
+                        <strong id="procurementPayment">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>Procurement Status</span>
+
+                        <strong id="procurementProcess">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REMARKS -->
+
+                <div class="status-note">
+
+                    <strong>Remarks:</strong>
+
+                    <span id="procurementRemarks">
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- NO PROCUREMENT -->
+
+            <div
+                id="procurementEmpty"
+                class="empty-card"
+                style="margin-top: 25px;"
+            >
+
+                <div>🌾</div>
+
+                <h3>Procurement Not Started</h3>
+
+                <p>
+                    Your procurement details will appear here
+                    after your crop is processed at the centre.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <div>
+
+            <strong>KhetSetu</strong>
+
+            <p>
+                Farmer Procurement & Queue Management Portal
+            </p>
+
+        </div>
+
+        <div>
+
+            <p>
+                © 2026 Agriculture Department,
+                Government of Maharashtra
+            </p>
+
+        </div>
+
+    </footer>
+
+
+
+    <script src="/farmer%20portal/farmer.js"></script>
+
+</body>
+</html>

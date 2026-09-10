@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Khetsetu - Farmer Login</title>
+
+    <link rel="stylesheet" href="/gov%20css/style.css">
+
+</head>
+
+
+<body class="login-page">
+
+
+    <div class="login-container">
+
+
+        <!-- Logo -->
+
+        <div class="login-logo">
+
+            <span>🌾</span>
+
+            <h1>Khetsetu</h1>
+
+            <p>Farmer Procurement Portal</p>
+
+        </div>
+
+
+        <!-- Login Card -->
+
+        <div class="login-card">
+
+            <h2>Farmer Login</h2>
+
+            <p class="login-subtitle">
+                Sign in to access your farmer dashboard
+            </p>
+
+
+            <form action="/farmer" method="post" >
+
+
+                <!-- Email -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Remember -->
+
+                <div class="login-options">
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                            name="remember"
+                        >
+
+                        Remember me
+
+                    </label>
+
+                    <a href="#">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <!-- Login -->
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                >
+                    Login
+                </button>
+
+
+            </form>
+
+
+            <div class="login-note">
+
+                <span>🔒</span>
+
+                <p>
+                    Secure access for registered farmers
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <p class="login-footer">
+            © 2026 Khetsetu Farmer Portal
+        </p>
+
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Khetsetu - Procurement</title>
+
+    <link rel="stylesheet" href="/gov%20css/style.css">
+
+    <style>
+
+        .token-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .token-input-wrapper input {
+            flex: 1;
+        }
+
+        .find-farmer-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .find-farmer-btn:hover {
+            background: #1d4ed8;
+        }
+
+        #farmerName,
+        #farmerId,
+        #village {
+            background: #f5f7fa;
+        }
+
+        #totalAmount {
+            background: #f5f7fa;
+        }
+
+        /* Rejected field appearance */
+
+        .field-disabled {
+            background: #e5e7eb !important;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 700px) {
+
+            .token-input-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .find-farmer-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <span>🌾</span>
+
+            <div>
+
+                <h2>Khetsetu</h2>
+
+                <p>Government Portal</p>
+
+            </div>
+
+        </div>
+
+
+        <nav class="nav-menu">
+
+            <a href="/gov" class="nav-link">
+                <span class="icon">▣</span>
+                <span>Dashboard</span>
+            </a>
+
+
+            <a href="/gov/queue" class="nav-link">
+                <span class="icon">⇄</span>
+                <span>Queue</span>
+            </a>
+
+
+            <a href="/gov/farmers" class="nav-link">
+                <span class="icon">♙</span>
+                <span>Farmers</span>
+            </a>
+
+
+            <a href="/gov/procurement" class="nav-link active">
+                <span class="icon">▤</span>
+                <span>Procurement</span>
+            </a>
+
+
+            <a href="/gov/settings" class="nav-link">
+                <span class="icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button
+                class="logout-btn"
+                onclick="window.location.href='/gov/logout'"
+            >
+
+                <span class="icon">↪</span>
+                <span>Logout</span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div class="page-title">
+
+                <h1>Procurement</h1>
+
+                <p>
+                    Enter and manage farmer crop details
+                </p>
+
+            </div>
+
+
+            <div class="header-right">
+
+                <button class="notification">
+                    🔔
+                    <span class="notification-dot"></span>
+                </button>
+
+
+                <div class="profile">
+
+                    <div class="profile-image">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong>
+                            Admin Officer
+                        </strong>
+
+                        <span>
+                            Procurement Officer
+                        </span>
+
+                    </div>
+
+                    <span class="arrow">
+                        ⌄
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =========================
+             CONTENT
+        ========================== -->
+
+        <section class="content">
+
+
+            <h2>
+                Farmer Procurement
+            </h2>
+
+
+            <p class="content-subtitle">
+                Enter the crop and procurement details after verifying the farmer.
+            </p>
+
+
+
+            <!-- =========================
+                 FARMER INFORMATION
+            ========================== -->
+
+            <div class="procurement-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h3>
+                            Farmer Information
+                        </h3>
+
+                        <p>
+                            Enter the token number to identify the farmer.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- TOKEN -->
+
+                    <div class="form-group">
+
+                        <label for="token">
+                            Token Number
+                        </label>
+
+
+                        <div class="token-input-wrapper">
+
+                            <input
+                                type="text"
+                                id="token"
+                                placeholder="Example: 156"
+                            >
+
+
+                            <button
+                                type="button"
+                                class="find-farmer-btn"
+                                onclick="findFarmer()"
+                            >
+                                Find Farmer
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FARMER NAME -->
+
+                    <div class="form-group">
+
+                        <label for="farmerName">
+                            Farmer Name
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="farmerName"
+                            placeholder="Farmer name"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- FARMER ID -->
+
+                    <div class="form-group">
+
+                        <label for="farmerId">
+                            Farmer ID
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="farmerId"
+                            placeholder="Farmer ID"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- VILLAGE -->
+
+                    <div class="form-group">
+
+                        <label for="village">
+                            Village
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="village"
+                            placeholder="Village"
+                            readonly
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 CROP INFORMATION
+            ========================== -->
+
+            <div class="procurement-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h3>
+                            Crop Information
+                        </h3>
+
+                        <p>
+                            Crop details are loaded from the farmer registration.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="crop">
+                            Crop Type
+                        </label>
+
+
+                    <select id="crop">
+
+                        <option value="">
+                            Select Crop
+                        </option>
+
+                        <option value="Rice">
+                            Rice
+                        </option>
+
+                        <option value="Wheat">
+                            Wheat
+                        </option>
+
+                        <option value="Jowar">
+                            Jowar
+                        </option>
+
+                        <option value="Bajra">
+                            Bajra
+                        </option>
+
+                        <option value="Tur">
+                            Tur
+                        </option>
+
+                        <option value="Gram">
+                            Gram
+                        </option>
+
+                        <option value="Soybean">
+                            Soybean
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+    
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="quantity">
+                            Quantity (kg)
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            placeholder="Quantity"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="harvestDate">
+                            Harvest Date
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="harvestDate"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="quality">
+                            Quality Grade
+                        </label>
+
+
+                        <select id="quality">
+
+                            <option value="">
+                                Select Grade
+                            </option>
+
+                            <option value="A">
+                                Grade A
+                            </option>
+
+                            <option value="B">
+                                Grade B
+                            </option>
+
+                            <option value="C">
+                                Grade C
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 TESTING
+            ========================== -->
+
+            <div class="procurement-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h3>
+                            Crop Testing
+                        </h3>
+
+                        <p>
+                            Record the result of crop quality testing.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="testResult">
+                            Test Result
+                        </label>
+
+
+                        <select id="testResult">
+
+                            <option value="Pending">
+                                Pending
+                            </option>
+
+                            <option value="Passed">
+                                Passed
+                            </option>
+
+                            <option value="Rejected">
+                                Rejected
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="testedQuantity">
+                            Accepted Quantity (kg)
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="testedQuantity"
+                            placeholder="Enter accepted quantity"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="remarks">
+                            Remarks
+                        </label>
+
+
+                        <textarea
+                            id="remarks"
+                            rows="4"
+                            placeholder="Enter testing remarks"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 PROCUREMENT DETAILS
+            ========================== -->
+
+            <div class="procurement-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h3>
+                            Procurement Details
+                        </h3>
+
+                        <p>
+                            Enter the purchase information.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="rate">
+                            Rate per kg (₹)
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="rate"
+                            placeholder="Enter rate"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="totalAmount">
+                            Total Amount (₹)
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="totalAmount"
+                            placeholder="Automatically calculated"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="paymentStatus">
+                            Payment Status
+                        </label>
+
+
+                        <select id="paymentStatus">
+
+                            <option value="Pending">
+                                Pending
+                            </option>
+
+                            <option value="Paid">
+                                Paid
+                            </option>
+
+                            <option value="Not Paid">
+                                Not Paid
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="procurementStatus">
+                            Procurement Status
+                        </label>
+
+
+                        <select id="procurementStatus">
+
+                            <option value="Processing">
+                                Processing
+                            </option>
+
+                            <option value="Completed">
+                                Completed
+                            </option>
+
+                            <option value="Rejected">
+                                Rejected
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 BUTTONS
+            ========================== -->
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="clearForm()"
+                >
+                    Clear
+                </button>
+
+
+                <button
+                    type="button"
+                    class="save-btn"
+                    onclick="saveProcurement()"
+                >
+                    Save Procurement
+                </button>
+
+            </div>
+
+
+
+            <!-- =========================
+                 RECENT PROCUREMENT
+            ========================== -->
+
+            <div class="procurement-card recent-procurement">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h3>
+                            Recent Procurement
+                        </h3>
+
+                        <p>
+                            Recently recorded farmer transactions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Token</th>
+
+                                <th>Farmer</th>
+
+                                <th>Crop</th>
+
+                                <th>Quantity</th>
+
+                                <th>Test</th>
+
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="procurementTable">
+
+                            <tr>
+
+                                <td colspan="6" style="text-align:center;">
+                                    Loading procurement records...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        // ==========================================
+        // FIND FARMER USING TOKEN
+        // ==========================================
+
+        async function findFarmer() {
+
+            const token =
+                document.getElementById("token").value.trim();
+
+
+            if (!token) {
+
+                alert("Please enter a token number.");
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(`/gov/api/procurement/${token}`);
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Farmer registration not found."
+                    );
+
+                    return;
+
+                }
+
+
+                // Farmer details
+
+                document.getElementById("farmerName").value =
+                    data.name || "";
+
+
+                document.getElementById("farmerId").value =
+                    data.farmer_id || "";
+
+
+                document.getElementById("village").value =
+                    data.village || "";
+
+
+                // Crop details
+
+                document.getElementById("crop").value =
+                    data.crop_type || "";
+
+
+                document.getElementById("quantity").value =
+                    data.product_weight || "";
+
+
+                // Preferred date
+
+                if (data.preferred_date) {
+
+                    document.getElementById("harvestDate").value =
+                        String(data.preferred_date).substring(0, 10);
+
+                }
+
+
+                calculateTotal();
+
+
+                // Make sure form starts normally
+
+                applyTestResultRules();
+
+
+                alert(
+                    "Farmer details loaded successfully."
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Server error. Please check the server."
+                );
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // TEST RESULT RULES
+        // ==========================================
+
+        function applyTestResultRules() {
+
+            const testResult =
+                document.getElementById("testResult").value;
+
+            const paymentStatus =
+                document.getElementById("paymentStatus");
+
+            const procurementStatus =
+                document.getElementById("procurementStatus");
+
+            const testedQuantity =
+                document.getElementById("testedQuantity");
+
+            const rate =
+                document.getElementById("rate");
+
+            const totalAmount =
+                document.getElementById("totalAmount");
+
+
+            // ======================================
+            // REJECTED
+            // ======================================
+
+            if (testResult === "Rejected") {
+
+                // Automatically set values
+
+                paymentStatus.value =
+                    "Not Paid";
+
+                procurementStatus.value =
+                    "Rejected";
+
+                testedQuantity.value =
+                    "0";
+
+                rate.value =
+                    "";
+
+                totalAmount.value =
+                    "0.00";
+
+
+                // Disable fields
+
+                paymentStatus.disabled =
+                    true;
+
+                procurementStatus.disabled =
+                    true;
+
+                testedQuantity.readOnly =
+                    true;
+
+                rate.disabled =
+                    true;
+
+
+                // Visual indication
+
+                paymentStatus.classList.add(
+                    "field-disabled"
+                );
+
+                procurementStatus.classList.add(
+                    "field-disabled"
+                );
+
+                testedQuantity.classList.add(
+                    "field-disabled"
+                );
+
+                rate.classList.add(
+                    "field-disabled"
+                );
+
+                totalAmount.classList.add(
+                    "field-disabled"
+                );
+
+            }
+
+
+            // ======================================
+            // PASSED / PENDING
+            // ======================================
+
+            else {
+
+                paymentStatus.disabled =
+                    false;
+
+                procurementStatus.disabled =
+                    false;
+
+                testedQuantity.readOnly =
+                    false;
+
+                rate.disabled =
+                    false;
+
+
+                // Remove disabled styling
+
+                paymentStatus.classList.remove(
+                    "field-disabled"
+                );
+
+                procurementStatus.classList.remove(
+                    "field-disabled"
+                );
+
+                testedQuantity.classList.remove(
+                    "field-disabled"
+                );
+
+                rate.classList.remove(
+                    "field-disabled"
+                );
+
+                totalAmount.classList.remove(
+                    "field-disabled"
+                );
+
+
+                // Set normal defaults
+
+                if (testResult === "Pending") {
+
+                    paymentStatus.value =
+                        "Pending";
+
+                    procurementStatus.value =
+                        "Processing";
+
+                }
+
+
+                if (testResult === "Passed") {
+
+                    paymentStatus.value =
+                        "Pending";
+
+                    procurementStatus.value =
+                        "Processing";
+
+                    calculateTotal();
+
+                }
+
+            }
+
+        }
+
+
+        // ==========================================
+        // WHEN TEST RESULT CHANGES
+        // ==========================================
+
+        document
+            .getElementById("testResult")
+            .addEventListener(
+                "change",
+                applyTestResultRules
+            );
+
+
+
+        // ==========================================
+        // CALCULATE TOTAL
+        // ==========================================
+
+        function calculateTotal() {
+
+            const testResult =
+                document.getElementById("testResult").value;
+
+
+            // Do not calculate amount
+            // for rejected crop
+
+            if (testResult === "Rejected") {
+
+                document.getElementById("totalAmount").value =
+                    "0.00";
+
+                return;
+
+            }
+
+
+            const quantity =
+                parseFloat(
+                    document.getElementById("quantity").value
+                ) || 0;
+
+
+            const rate =
+                parseFloat(
+                    document.getElementById("rate").value
+                ) || 0;
+
+
+            const total =
+                quantity * rate;
+
+
+            document.getElementById("totalAmount").value =
+                total.toFixed(2);
+
+        }
+
+
+        document
+            .getElementById("quantity")
+            .addEventListener(
+                "input",
+                calculateTotal
+            );
+
+
+        document
+            .getElementById("rate")
+            .addEventListener(
+                "input",
+                calculateTotal
+            );
+
+
+
+        // ==========================================
+        // SAVE PROCUREMENT
+        // ==========================================
+
+        async function saveProcurement() {
+
+
+            const token =
+                document.getElementById("token").value.trim();
+
+
+            const farmerId =
+                document.getElementById("farmerId").value;
+
+
+            const crop =
+                document.getElementById("crop").value;
+
+
+            const quantity =
+                document.getElementById("quantity").value;
+
+
+            const quality =
+                document.getElementById("quality").value;
+
+
+            const testResult =
+                document.getElementById("testResult").value;
+
+
+            const testedQuantity =
+                document.getElementById("testedQuantity").value;
+
+
+            const remarks =
+                document.getElementById("remarks").value;
+
+
+            const rate =
+                document.getElementById("rate").value;
+
+
+            const totalAmount =
+                document.getElementById("totalAmount").value;
+
+
+            const paymentStatus =
+                document.getElementById("paymentStatus").value;
+
+
+            const procurementStatus =
+                document.getElementById("procurementStatus").value;
+
+
+
+            // ======================================
+            // VALIDATION
+            // ======================================
+
+            if (!token) {
+
+                alert(
+                    "Please enter a token number."
+                );
+
+                return;
+
+            }
+
+
+            if (!farmerId) {
+
+                alert(
+                    "Please find the farmer first."
+                );
+
+                return;
+
+            }
+
+
+            if (!crop) {
+
+                alert(
+                    "Please select a crop."
+                );
+
+                return;
+
+            }
+
+
+            if (!quantity) {
+
+                alert(
+                    "Please enter quantity."
+                );
+
+                return;
+
+            }
+
+
+            // ======================================
+            // EXTRA FRONTEND PROTECTION
+            // ======================================
+
+            if (testResult === "Rejected") {
+
+                // Force correct values one more time
+
+                document.getElementById(
+                    "paymentStatus"
+                ).value = "Not Paid";
+
+
+                document.getElementById(
+                    "procurementStatus"
+                ).value = "Rejected";
+
+
+                document.getElementById(
+                    "testedQuantity"
+                ).value = "0";
+
+
+                document.getElementById(
+                    "totalAmount"
+                ).value = "0.00";
+
+            }
+
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "/gov/api/procurement",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                token:
+                                    token,
+
+                                farmerId:
+                                    farmerId,
+
+                                crop:
+                                    crop,
+
+                                quantity:
+                                    quantity,
+
+                                quality:
+                                    quality,
+
+                                testResult:
+                                    testResult,
+
+                                testedQuantity:
+                                    document.getElementById(
+                                        "testedQuantity"
+                                    ).value,
+
+                                remarks:
+                                    remarks,
+
+                                rate:
+                                    document.getElementById(
+                                        "rate"
+                                    ).value,
+
+                                totalAmount:
+                                    document.getElementById(
+                                        "totalAmount"
+                                    ).value,
+
+                                paymentStatus:
+                                    document.getElementById(
+                                        "paymentStatus"
+                                    ).value,
+
+                                procurementStatus:
+                                    document.getElementById(
+                                        "procurementStatus"
+                                    ).value
+
+                            })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.message ||
+                        "Failed to save procurement."
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Procurement saved successfully!"
+                );
+
+
+                clearForm();
+
+
+                loadProcurement();
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "Save procurement error:",
+                    error
+                );
+
+
+                alert(
+                    "Server error. Please try again."
+                );
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // LOAD RECENT PROCUREMENT
+        // ==========================================
+
+        async function loadProcurement() {
+
+
+            const table =
+                document.getElementById(
+                    "procurementTable"
+                );
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "/gov/api/procurement"
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    table.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align:center;">
+                                Unable to load procurement records
+                            </td>
+                        </tr>
+                    `;
+
+                    return;
+
+                }
+
+
+                if (data.length === 0) {
+
+                    table.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align:center;">
+                                No procurement records found
+                            </td>
+                        </tr>
+                    `;
+
+                    return;
+
+                }
+
+
+                table.innerHTML = "";
+
+
+                data.forEach(item => {
+
+
+                    const testClass =
+                        item.test_result === "Passed"
+                            ? "completed"
+                            : item.test_result === "Rejected"
+                                ? "processing"
+                                : "processing";
+
+
+                    const statusClass =
+                        item.procurement_status === "Completed"
+                            ? "completed"
+                            : item.procurement_status === "Rejected"
+                                ? "processing"
+                                : "processing";
+
+
+                    const row =
+                        document.createElement("tr");
+
+
+                    row.innerHTML = `
+
+                        <td>
+                            #${item.token}
+                        </td>
+
+                        <td>
+                            ${item.farmer_name}
+                        </td>
+
+                        <td>
+                            ${item.crop_type}
+                        </td>
+
+                        <td>
+                            ${item.quantity} kg
+                        </td>
+
+                        <td>
+
+                            <span class="badge ${testClass}">
+                                ${item.test_result || "Pending"}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge ${statusClass}">
+                                ${item.procurement_status || "Processing"}
+                            </span>
+
+                        </td>
+
+                    `;
+
+
+                    table.appendChild(row);
+
+                });
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "Load procurement error:",
+                    error
+                );
+
+
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align:center;">
+                            Server error while loading records
+                        </td>
+                    </tr>
+                `;
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // CLEAR FORM
+        // ==========================================
+
+        function clearForm() {
+
+
+            document.getElementById("token").value =
+                "";
+
+            document.getElementById("farmerName").value =
+                "";
+
+            document.getElementById("farmerId").value =
+                "";
+
+            document.getElementById("village").value =
+                "";
+
+            document.getElementById("crop").value =
+                "";
+
+            document.getElementById("quantity").value =
+                "";
+
+            document.getElementById("harvestDate").value =
+                "";
+
+            document.getElementById("quality").value =
+                "";
+
+            document.getElementById("testResult").value =
+                "Pending";
+
+            document.getElementById("testedQuantity").value =
+                "";
+
+            document.getElementById("remarks").value =
+                "";
+
+            document.getElementById("rate").value =
+                "";
+
+            document.getElementById("totalAmount").value =
+                "";
+
+            document.getElementById("paymentStatus").disabled =
+                false;
+
+            document.getElementById("procurementStatus").disabled =
+                false;
+
+            document.getElementById("testedQuantity").readOnly =
+                false;
+
+            document.getElementById("rate").disabled =
+                false;
+
+
+            document.getElementById("paymentStatus").value =
+                "Pending";
+
+            document.getElementById("procurementStatus").value =
+                "Processing";
+
+
+            // Remove disabled styling
+
+            document
+                .getElementById("paymentStatus")
+                .classList.remove("field-disabled");
+
+            document
+                .getElementById("procurementStatus")
+                .classList.remove("field-disabled");
+
+            document
+                .getElementById("testedQuantity")
+                .classList.remove("field-disabled");
+
+            document
+                .getElementById("rate")
+                .classList.remove("field-disabled");
+
+            document
+                .getElementById("totalAmount")
+                .classList.remove("field-disabled");
+
+        }
+
+
+
+        // ==========================================
+        // LOAD DATA WHEN PAGE OPENS
+        // ==========================================
+
+        loadProcurement();
+
+
+    </script>
+
+
+</body>
+
+</html>

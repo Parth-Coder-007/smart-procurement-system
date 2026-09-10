@@ -1,0 +1,412 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    background: #eef5ef;
+    color: #17251b;
+}
+
+
+/* Main Container */
+
+.signup-container {
+    min-height: 100vh;
+    display: flex;
+}
+
+
+/* =========================
+   LEFT SECTION
+========================= */
+
+.signup-info {
+    width: 42%;
+    background: linear-gradient(145deg, #0b3d2e, #126b4d);
+    color: white;
+    padding: 55px 60px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+/* Logo */
+
+.logo {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 55px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo span {
+    font-size: 34px;
+}
+
+
+/* Heading */
+
+.signup-info h1 {
+    font-size: 46px;
+    margin-bottom: 20px;
+    line-height: 1.1;
+}
+
+.signup-info > p {
+    font-size: 17px;
+    line-height: 1.7;
+    max-width: 520px;
+    color: #d9eee3;
+}
+
+
+/* Benefits */
+
+.benefits {
+    margin-top: 45px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.icon {
+    min-width: 48px;
+    height: 48px;
+
+    background: rgba(255, 255, 255, 0.14);
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+.benefit h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.benefit p {
+    color: #cbe4d7;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   RIGHT SECTION
+========================= */
+
+.signup-form-section {
+    width: 58%;
+    background: #ffffff;
+
+    padding: 45px 65px;
+
+    overflow-y: auto;
+}
+
+
+/* Header */
+
+.form-header {
+    margin-bottom: 28px;
+}
+
+.form-header h2 {
+    font-size: 30px;
+    color: #153b2a;
+    margin-bottom: 8px;
+}
+
+.form-header p {
+    color: #718078;
+    font-size: 14px;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+#signupForm {
+    max-width: 800px;
+}
+
+
+/* Form Row */
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    width: 50%;
+}
+
+
+/* Form Group */
+
+.form-group {
+    margin-bottom: 19px;
+}
+
+.form-group label {
+    display: block;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #304238;
+
+    margin-bottom: 7px;
+}
+
+
+/* Inputs */
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+
+    border: 1px solid #d5ded8;
+
+    border-radius: 9px;
+
+    padding: 12px 14px;
+
+    font-size: 14px;
+
+    outline: none;
+
+    background: #fbfdfb;
+
+    color: #1b2d23;
+
+    transition: 0.2s;
+}
+
+
+.form-group input,
+.form-group select {
+    height: 44px;
+}
+
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+
+/* Focus */
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #16845c;
+
+    box-shadow: 0 0 0 3px rgba(22, 132, 92, 0.10);
+
+    background: white;
+}
+
+
+/* Placeholder */
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9aa59f;
+}
+
+
+/* Land Area */
+
+.land-input {
+    position: relative;
+}
+
+.land-input input {
+    padding-right: 75px;
+}
+
+.land-input span {
+    position: absolute;
+
+    right: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #6c7971;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* Terms */
+
+.terms {
+    margin: 5px 0 20px;
+}
+
+.terms label {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 12px;
+
+    color: #66736b;
+
+    cursor: pointer;
+}
+
+.terms input {
+    width: 15px;
+    height: 15px;
+
+    accent-color: #16845c;
+}
+
+
+/* Signup Button */
+
+.signup-btn {
+    width: 100%;
+
+    height: 48px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #16845c;
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.signup-btn:hover {
+    background: #0f6d4b;
+    transform: translateY(-1px);
+}
+
+
+/* Login */
+
+.login-link {
+    text-align: center;
+
+    margin-top: 18px;
+
+    color: #748078;
+
+    font-size: 13px;
+}
+
+.login-link a {
+    color: #16845c;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    margin-left: 4px;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+
+    .signup-info {
+        width: 38%;
+        padding: 40px;
+    }
+
+    .signup-form-section {
+        width: 62%;
+        padding: 40px;
+    }
+
+    .signup-info h1 {
+        font-size: 38px;
+    }
+
+}
+
+
+@media (max-width: 750px) {
+
+    .signup-container {
+        flex-direction: column;
+    }
+
+    .signup-info {
+        width: 100%;
+        padding: 35px 25px;
+    }
+
+    .signup-info h1 {
+        font-size: 34px;
+    }
+
+    .logo {
+        margin-bottom: 30px;
+    }
+
+    .benefits {
+        margin-top: 30px;
+    }
+
+    .signup-form-section {
+        width: 100%;
+        padding: 35px 25px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-row .form-group {
+        width: 100%;
+    }
+    
+
+}

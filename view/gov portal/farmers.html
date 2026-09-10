@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Khetsetu - Farmers</title>
+
+    <link rel="stylesheet" href="/gov%20css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ============================= -->
+    <!-- SIDEBAR -->
+    <!-- ============================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <span>🌾</span>
+
+            <div>
+                <h2>Khetsetu</h2>
+                <p>Government Portal</p>
+            </div>
+
+        </div>
+
+
+        <nav class="nav-menu">
+
+            <a href="/gov" class="nav-link">
+                <span class="icon">▣</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/gov/queue" class="nav-link">
+                <span class="icon">⇄</span>
+                <span>Queue</span>
+            </a>
+
+            <a href="/gov/farmers" class="nav-link active">
+                <span class="icon">♙</span>
+                <span>Farmers</span>
+            </a>
+
+            <a href="/gov/procurement" class="nav-link">
+                <span class="icon">▤</span>
+                <span>Procurement</span>
+            </a>
+
+            <a href="/gov/settings" class="nav-link">
+                <span class="icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button
+                class="logout-btn"
+                onclick="window.location.href='/gov/logout'"
+            >
+
+                <span class="icon">↪</span>
+
+                <span>Logout</span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ============================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================= -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div class="page-title">
+
+                <h1>Farmers</h1>
+
+                <p>
+                    View registered farmers
+                </p>
+
+            </div>
+
+
+            <div class="header-right">
+
+                <button class="notification">
+
+                    🔔
+
+                    <span class="notification-dot"></span>
+
+                </button>
+
+
+                <div class="profile">
+
+                    <div class="profile-image">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong>
+                            Admin Officer
+                        </strong>
+
+                        <span>
+                            Procurement Officer
+                        </span>
+
+                    </div>
+
+                    <span class="arrow">
+                        ⌄
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ============================= -->
+        <!-- FARMERS SECTION -->
+        <!-- ============================= -->
+
+        <section class="content">
+
+            <h2>
+                Registered Farmers
+            </h2>
+
+            <p class="content-subtitle">
+                Farmer information received through Khetsetu.
+            </p>
+
+
+            <div class="recent-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h3>
+                            Farmer Records
+                        </h3>
+
+                        <p>
+                            Registered farmer information
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ============================= -->
+                <!-- FARMER TABLE -->
+                <!-- ============================= -->
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Farmer ID
+                                </th>
+
+                                <th>
+                                    Name
+                                </th>
+
+                                <th>
+                                    Phone
+                                </th>
+
+                                <th>
+                                    Village
+                                </th>
+
+                                <th>
+                                    Registration Date
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="farmersTable">
+
+                            <!-- Farmers will be loaded from MySQL -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ============================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================= -->
+
+    <script>
+
+        async function loadFarmers() {
+
+            try {
+
+                const response = await fetch('/gov/api/farmers');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load farmers');
+                }
+
+                const farmers = await response.json();
+
+                const table =
+                    document.getElementById('farmersTable');
+
+                table.innerHTML = '';
+
+
+                // No farmers found
+
+                if (farmers.length === 0) {
+
+                    table.innerHTML = `
+                        <tr>
+                            <td colspan="5">
+                                No registered farmers found.
+                            </td>
+                        </tr>
+                    `;
+
+                    return;
+                }
+
+
+                // Display farmers
+
+                farmers.forEach(farmer => {
+
+                    const date = new Date(
+                        farmer.created_at
+                    ).toLocaleDateString('en-IN');
+
+
+                    table.innerHTML += `
+
+                        <tr>
+
+                            <td>
+                                F${String(farmer.id).padStart(3, '0')}
+                            </td>
+
+                            <td>
+                                ${farmer.name}
+                            </td>
+
+                            <td>
+                                ${farmer.mobile}
+                            </td>
+
+                            <td>
+                                ${farmer.village}
+                            </td>
+
+                            <td>
+                                ${date}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.log(
+                    "Error loading farmers:",
+                    error
+                );
+
+                document.getElementById('farmersTable').innerHTML = `
+
+                    <tr>
+
+                        <td colspan="5">
+                            Unable to load farmer data.
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+
+        // Load farmers when page opens
+
+        loadFarmers();
+
+    </script>
+
+
+</body>
+
+</html>

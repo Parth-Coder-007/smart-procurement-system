@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/farmer%20portal/home.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chicle&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <title>KhetSetu</title>
+</head>
+
+<body>
+
+    <div class="whole-page">
+
+        <!-- ================= NAVIGATION ================= -->
+
+        <div class="heading">
+
+            <img class="logo" src="/farmer%20portal/images/logo.png">
+
+            <p class="name">KhetSetu</p>
+
+            <button class="b1">FEATURES</button>
+
+            <button class="b2">SCHEMES</button>
+
+            <button class="b3">HOW IT WORKS</button>
+
+            <button class="b4">CONTACT US</button>
+
+            <button class="sign"
+                onclick="window.location.href='/farmer/signup'">
+                SIGNUP
+            </button>
+
+            <button class="log"
+                onclick="openLogin()">
+                LOGIN
+            </button>
+
+            <!-- GOVERNMENT PORTAL -->
+
+            <button class="gov-login"
+                onclick="window.location.href='/gov/login'">
+                GOVERNMENT PORTAL
+            </button>
+
+        </div>
+
+
+        <!-- ================= IMAGE SLIDER ================= -->
+
+        <div class="scroll">
+
+            <div class="slider">
+
+                <!-- SLIDE 1 -->
+
+                <div class="box">
+
+                    <div class="left">
+
+                        <p class="tagline">
+                            Book Your Slot. Skip the Wait.
+                        </p>
+
+                    </div>
+
+                    <div class="right">
+
+                        <img class="sport"
+                            src="/farmer%20portal/images/laptop.png">
+
+                    </div>
+
+                </div>
+
+
+                <!-- SLIDE 2 -->
+
+                <div class="box">
+
+                    <div class="left">
+
+                        <p class="tagline">
+                            Know Your Queue. Know Your Turn.
+                        </p>
+
+                    </div>
+
+                    <div class="right">
+
+                        <img class="sport"
+                            src="/farmer%20portal/images/image1.png">
+
+                    </div>
+
+                </div>
+
+
+                <!-- SLIDE 3 -->
+
+                <div class="box">
+
+                    <div class="left">
+
+                        <p class="tagline">
+                            From Crop to Payment, Track Every Step.
+                        </p>
+
+                    </div>
+
+                    <div class="right">
+
+                        <img class="sport"
+                            src="/farmer%20portal/images/image3.png">
+
+                    </div>
+
+                </div>
+
+
+                <!-- SLIDE 4 -->
+
+                <div class="box">
+
+                    <div class="left">
+
+                        <p class="tagline">
+                            Sell Smarter. Wait Less. Get Paid Faster.
+                        </p>
+
+                    </div>
+
+                    <div class="right">
+
+                        <img class="sport"
+                            src="/farmer%20portal/images/image4.png">
+
+                    </div>
+
+                </div>
+
+
+                <!-- SLIDE 5 -->
+
+                <div class="box">
+
+                    <div class="left">
+
+                        <p class="tagline">
+                            One Platform. Complete Procurement Transparency.
+                        </p>
+
+                    </div>
+
+                    <div class="right">
+
+                        <img class="sport"
+                            src="/farmer%20portal/images/image5.png">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= FEATURES ================= -->
+
+        <div class="features">
+
+            <!-- 1 -->
+
+            <div class="feature-card appointment">
+
+                <div class="icon">📅</div>
+
+                <h3>Digital Appointment</h3>
+
+                <p>
+                    Book your crop procurement slot in advance
+                    and avoid unnecessary waiting.
+                </p>
+
+            </div>
+
+
+            <!-- 2 -->
+
+            <div class="feature-card queue">
+
+                <div class="icon">👥</div>
+
+                <h3>Live Queue Tracking</h3>
+
+                <p>
+                    Check your current queue position and
+                    estimated waiting time in real time.
+                </p>
+
+            </div>
+
+
+            <!-- 3 -->
+
+            <div class="feature-card procurement">
+
+                <div class="icon">🌾</div>
+
+                <h3>Crop Procurement Tracking</h3>
+
+                <p>
+                    Track your crop through arrival, quality
+                    checking and procurement.
+                </p>
+
+            </div>
+
+
+            <!-- 4 -->
+
+            <div class="feature-card payment">
+
+                <div class="icon">₹</div>
+
+                <h3>Payment Tracking</h3>
+
+                <p>
+                    Check your payment status and know when
+                    your procurement payment is processed.
+                </p>
+
+            </div>
+
+
+            <!-- 5 -->
+
+            <div class="feature-card dashboard">
+
+                <div class="icon">📊</div>
+
+                <h3>Farmer Dashboard</h3>
+
+                <p>
+                    Manage appointments, queue status,
+                    procurement and payments from one place.
+                </p>
+
+            </div>
+
+
+            <!-- 6 -->
+
+            <div class="feature-card support">
+
+                <div class="icon">🧑‍🌾</div>
+
+                <h3>Farmer Support</h3>
+
+                <p>
+                    Get step-by-step guidance and assistance
+                    whenever you need help.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= GOVERNMENT SCHEMES ================= -->
+
+        <section class="schemes-section">
+
+            <div class="schemes-heading">
+
+                <span class="section-label">
+                    GOVERNMENT SUPPORT
+                </span>
+
+                <h2>
+                    Government Schemes for Farmers
+                </h2>
+
+                <p>
+                    Discover government schemes designed to support farmers,
+                    protect crops and improve agricultural income.
+                </p>
+
+            </div>
+
+
+            <div class="schemes-container">
+
+
+                <!-- PM KISAN -->
+
+                <div class="scheme-card scheme-green">
+
+                    <div class="scheme-icon">
+                        🌾
+                    </div>
+
+                    <div class="scheme-content">
+
+                        <span class="scheme-type">
+                            INCOME SUPPORT
+                        </span>
+
+                        <h3>
+                            PM-KISAN
+                        </h3>
+
+                        <p>
+                            Financial support for eligible farmer families
+                            to help meet agricultural and household needs.
+                        </p>
+
+                        <a href="#" class="scheme-link">
+                            Know More <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PM FASAL BIMA -->
+
+                <div class="scheme-card scheme-blue">
+
+                    <div class="scheme-icon">
+                        🛡️
+                    </div>
+
+                    <div class="scheme-content">
+
+                        <span class="scheme-type">
+                            CROP PROTECTION
+                        </span>
+
+                        <h3>
+                            PM Fasal Bima Yojana
+                        </h3>
+
+                        <p>
+                            Crop insurance support that helps farmers
+                            manage financial risks from crop losses.
+                        </p>
+
+                        <a href="#" class="scheme-link">
+                            Know More <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- KISAN CREDIT CARD -->
+
+                <div class="scheme-card scheme-orange">
+
+                    <div class="scheme-icon">
+                        💳
+                    </div>
+
+                    <div class="scheme-content">
+
+                        <span class="scheme-type">
+                            FARMER CREDIT
+                        </span>
+
+                        <h3>
+                            Kisan Credit Card
+                        </h3>
+
+                        <p>
+                            Access timely agricultural credit for cultivation
+                            and other eligible farming requirements.
+                        </p>
+
+                        <a href="#" class="scheme-link">
+                            Know More <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PM KRISHI SINCHAYEE -->
+
+                <div class="scheme-card scheme-teal">
+
+                    <div class="scheme-icon">
+                        💧
+                    </div>
+
+                    <div class="scheme-content">
+
+                        <span class="scheme-type">
+                            IRRIGATION
+                        </span>
+
+                        <h3>
+                            PM Krishi Sinchayee Yojana
+                        </h3>
+
+                        <p>
+                            Support for improving irrigation coverage
+                            and efficient use of water in agriculture.
+                        </p>
+
+                        <a href="#" class="scheme-link">
+                            Know More <span>→</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="schemes-footer">
+
+                <button class="view-schemes-btn">
+
+                    View All Government Schemes
+
+                    <span>→</span>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= HOW IT WORKS ================= -->
+
+        <div class="how">
+
+            <img class="work"
+                src="/farmer%20portal/images/image8.png">
+
+        </div>
+
+
+        <!-- ================= CONTACT ================= -->
+
+        <div class="contact">
+
+            <p class="details">
+
+                KISAN SUPPORT HELPLINE<br>
+
+                Kisan Support: 1800-180-1551<br>
+
+                Email: support@yourplatform.com
+
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        // =========================================
+        // IMAGE SLIDER
+        // =========================================
+
+        const slider = document.querySelector(".slider");
+
+        const slides = document.querySelectorAll(".box");
+
+        if (slider && slides.length > 0) {
+
+            const totalSlides = slides.length;
+
+            let currentSlide = 0;
+
+            // Start from first slide
+
+            slider.style.transform = "translateX(0)";
+
+            slider.style.transition =
+                "transform 0.8s ease-in-out";
+
+
+            setInterval(() => {
+
+                currentSlide++;
+
+                // When last slide is reached,
+                // immediately reset to first slide
+
+                if (currentSlide >= totalSlides) {
+
+                    slider.style.transition = "none";
+
+                    currentSlide = 0;
+
+                    slider.style.transform =
+                        "translateX(0)";
+
+                    // Force browser to apply reset
+
+                    slider.offsetHeight;
+
+                    // Enable animation again
+
+                    slider.style.transition =
+                        "transform 0.8s ease-in-out";
+
+                    return;
+
+                }
+
+
+                // Move to next slide
+
+                slider.style.transform =
+                    `translateX(-${currentSlide * 100}%)`;
+
+            }, 3000);
+
+        }
+
+
+        // =========================================
+        // LOGIN BUTTON
+        // =========================================
+
+        function openLogin() {
+
+            window.location.href = "/farmer/login";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
