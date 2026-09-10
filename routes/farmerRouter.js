@@ -604,29 +604,8 @@ router.get('/registrations', (req, res) => {
 // =====================================
 
 router.get('/logout', (req, res) => {
-
-    req.session.destroy((err) => {
-
-        if (err) {
-
-            console.log(
-                "Logout error:",
-                err
-            );
-
-            return res.status(500).send(
-                "Logout failed"
-            );
-
-        }
-
-
-        res.clearCookie('connect.sid');
-
-        res.redirect('/farmer/login');
-
-    });
-
+    req.session = null;
+    res.redirect('/farmer/login');
 });
 // ==========================================
 // GET FARMER PROCUREMENT DETAILS

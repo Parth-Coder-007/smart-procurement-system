@@ -197,21 +197,8 @@ router.get('/settings', (req, res) => {
 // =====================================
 
 router.get('/logout', (req, res) => {
-
-    req.session.destroy((err) => {
-
-        if (err) {
-
-            console.log(err);
-
-            return res.send('Logout failed');
-
-        }
-
-        res.redirect('/gov/login');
-
-    });
-
+    req.session = null;
+    res.redirect('/gov/login');
 });
 
 

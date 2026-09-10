@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const session = require('express-session');
+const session = require('cookie-session');
 
 const farmerRoute = require('./routes/farmerRouter');
 const govRoute = require('./routes/govRouter');
@@ -8,9 +8,11 @@ const app = express();
 
 // Session
 app.use(session({
+    name: 'khetsetu-session',
     secret: 'khetsetu-secret',
-    resave: false,
-    saveUninitialized: false
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 * 1000
 }));
 
 // Read JSON data
