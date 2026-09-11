@@ -21,7 +21,6 @@ const db = mysql.createPool({
 });
 
 
-
 // =====================================
 // FARMER LOGIN PAGE
 // =====================================
@@ -384,32 +383,41 @@ router.post('/register', (req, res) => {
 
 
     // =====================================
-    // FIND CURRENT QUEUE POSITION
+    // INSERT REGISTRATION
     // =====================================
 
-    const countSql = `
-        SELECT COUNT(*) AS total
-        FROM registrations
-        WHERE
-            procurement_centre = ?
-            AND preferred_date = ?
-            AND time_slot = ?
+    const insertSql = `
+        INSERT INTO registrations
+        (
+            farmer_id,
+            district,
+            procurement_centre,
+            crop_type,
+            product_weight,
+            preferred_date,
+            time_slot
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
 
     db.query(
-        countSql,
+        insertSql,
         [
+            farmerId,
+            district,
             procurement_centre,
+            crop_type,
+            product_weight,
             preferred_date,
             time_slot
         ],
-        (err, countResult) => {
+        (err, result) => {
 
             if (err) {
 
                 console.log(
-                    "Queue count error:",
+                    "Registration database error:",
                     err
                 );
 
@@ -420,67 +428,117 @@ router.post('/register', (req, res) => {
             }
 
 
-            const position =
-                countResult[0].total + 1;
+            const registrationId = result.insertId;
+
+
+            const token =
+                "KS-" +
+                String(registrationId).padStart(4, "0");
 
 
             // =====================================
-            // INSERT REGISTRATION
+            // FIND CORRECT QUEUE POSITION
+            // AFTER INSERT
             // =====================================
 
-            const insertSql = `
-                INSERT INTO registrations
-                (
-                    farmer_id,
-                    district,
-                    procurement_centre,
-                    crop_type,
-                    product_weight,
-                    preferred_date,
-                    time_slot
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+            const positionSql = `
+                SELECT COUNT(*) AS position
+                FROM registrations r
+
+                LEFT JOIN procurement p
+                    ON r.id = p.registration_id
+
+                WHERE
+                    p.id IS NULL
+
+                    AND r.procurement_centre = ?
+
+                    AND r.preferred_date = ?
+
+                    AND (
+                        STR_TO_DATE(
+                            TRIM(
+                                SUBSTRING_INDEX(
+                                    r.time_slot,
+                                    ' - ',
+                                    1
+                                )
+                            ),
+                            '%h:%i %p'
+                        )
+                        <
+                        STR_TO_DATE(
+                            TRIM(
+                                SUBSTRING_INDEX(
+                                    ?,
+                                    ' - ',
+                                    1
+                                )
+                            ),
+                            '%h:%i %p'
+                        )
+
+                        OR
+
+                        (
+                            STR_TO_DATE(
+                                TRIM(
+                                    SUBSTRING_INDEX(
+                                        r.time_slot,
+                                        ' - ',
+                                        1
+                                    )
+                                ),
+                                '%h:%i %p'
+                            )
+                            =
+                            STR_TO_DATE(
+                                TRIM(
+                                    SUBSTRING_INDEX(
+                                        ?,
+                                        ' - ',
+                                        1
+                                    )
+                                ),
+                                '%h:%i %p'
+                            )
+
+                            AND r.id <= ?
+                        )
+                    )
             `;
 
 
             db.query(
-                insertSql,
+                positionSql,
                 [
-                    farmerId,
-                    district,
                     procurement_centre,
-                    crop_type,
-                    product_weight,
                     preferred_date,
-                    time_slot
+                    time_slot,
+                    time_slot,
+                    registrationId
                 ],
-                (err, result) => {
+                (err, positionResult) => {
 
                     if (err) {
 
                         console.log(
-                            "Registration database error:",
+                            "Queue position error:",
                             err
                         );
 
                         return res.status(500).json({
-                            message: "Database error"
+                            message: "Registration successful, but queue calculation failed"
                         });
 
                     }
 
 
-                    const registrationId =
-                        result.insertId;
+                    const position =
+                        positionResult[0].position;
 
 
-                    const token =
-                        "KS-" +
-                        String(registrationId).padStart(4, "0");
-
-
-                    const total =
-                        position;
+                    const total = position;
 
 
                     console.log("--------------------------------");
@@ -604,9 +662,14 @@ router.get('/registrations', (req, res) => {
 // =====================================
 
 router.get('/logout', (req, res) => {
+
     req.session = null;
+
     res.redirect('/farmer/login');
+
 });
+
+
 // ==========================================
 // GET FARMER PROCUREMENT DETAILS
 // ==========================================
@@ -614,10 +677,13 @@ router.get('/logout', (req, res) => {
 router.get('/api/procurement', (req, res) => {
 
     if (!req.session.farmerId) {
+
         return res.status(401).json({
             message: 'Unauthorized'
         });
+
     }
+
 
     const sql = `
         SELECT
@@ -634,23 +700,38 @@ router.get('/api/procurement', (req, res) => {
             p.payment_status,
             p.procurement_status,
             p.created_at
+
         FROM procurement p
+
         WHERE p.farmer_id = ?
+
         ORDER BY p.id DESC
     `;
 
-    db.query(sql, [req.session.farmerId], (err, results) => {
 
-        if (err) {
-            console.log("Farmer procurement error:", err);
+    db.query(
+        sql,
+        [req.session.farmerId],
+        (err, results) => {
 
-            return res.status(500).json({
-                message: 'Database error'
-            });
+            if (err) {
+
+                console.log(
+                    "Farmer procurement error:",
+                    err
+                );
+
+                return res.status(500).json({
+                    message: 'Database error'
+                });
+
+            }
+
+            res.json(results);
+
         }
+    );
 
-        res.json(results);
-    });
 });
 
 
@@ -661,14 +742,21 @@ router.get('/api/procurement', (req, res) => {
 router.get('/api/queue', (req, res) => {
 
     if (!req.session.farmerId) {
+
         return res.status(401).json({
             message: 'Unauthorized'
         });
+
     }
+
 
     const farmerId = req.session.farmerId;
 
-    // Get latest registration of logged-in farmer
+
+    // =====================================
+    // GET LATEST REGISTRATION
+    // =====================================
+
     const farmerSql = `
         SELECT
             r.id AS token,
@@ -680,7 +768,8 @@ router.get('/api/queue', (req, res) => {
             r.time_slot,
 
             CASE
-                WHEN p.id IS NULL THEN 'Waiting'
+                WHEN p.id IS NULL
+                    THEN 'Waiting'
                 ELSE p.procurement_status
             END AS queue_status
 
@@ -697,150 +786,258 @@ router.get('/api/queue', (req, res) => {
     `;
 
 
-    db.query(farmerSql, [farmerId], (err, farmerResult) => {
+    db.query(
+        farmerSql,
+        [farmerId],
+        (err, farmerResult) => {
 
-        if (err) {
-            console.log("Farmer queue error:", err);
+            if (err) {
 
-            return res.status(500).json({
-                message: 'Database error'
-            });
-        }
+                console.log(
+                    "Farmer queue error:",
+                    err
+                );
 
+                return res.status(500).json({
+                    message: 'Database error'
+                });
 
-        if (farmerResult.length === 0) {
-
-            return res.json({
-                registration: null
-            });
-
-        }
-
-
-        const farmer = farmerResult[0];
+            }
 
 
-        // If procurement is already completed,
-        // farmer is no longer in active queue.
-        if (farmer.queue_status !== 'Waiting') {
+            // No registration found
+            if (farmerResult.length === 0) {
 
-            return res.json({
-                registration: farmer,
-                position: 0,
-                total: 0,
-                completed: true
-            });
+                return res.json({
+                    registration: null
+                });
 
-        }
+            }
 
 
-        // Count all ACTIVE registrations before this farmer
-        const queueSql = `
-            SELECT
-                r.id
-            FROM registrations r
+            const farmer = farmerResult[0];
 
-            LEFT JOIN procurement p
-                ON r.id = p.registration_id
 
-            WHERE
-                p.id IS NULL
+            // =====================================
+            // FARMER ALREADY PROCESSED
+            // =====================================
 
-                AND r.procurement_centre = ?
+            if (farmer.queue_status !== 'Waiting') {
 
-                AND r.preferred_date = ?
+                return res.json({
 
-                AND (
-                    r.time_slot < ?
+                    registration: farmer,
 
-                    OR (
-                        r.time_slot = ?
-                        AND r.id <= ?
+                    position: 0,
+
+                    total: 0,
+
+                    completed: true
+
+                });
+
+            }
+
+
+            // =====================================
+            // CALCULATE LIVE QUEUE POSITION
+            // =====================================
+
+            const queueSql = `
+
+                SELECT
+                    r.id
+
+                FROM registrations r
+
+                LEFT JOIN procurement p
+                    ON r.id = p.registration_id
+
+                WHERE
+
+                    p.id IS NULL
+
+                    AND r.procurement_centre = ?
+
+                    AND r.preferred_date = ?
+
+                    AND (
+
+                        -- Earlier time slot
+                        STR_TO_DATE(
+                            TRIM(
+                                SUBSTRING_INDEX(
+                                    r.time_slot,
+                                    ' - ',
+                                    1
+                                )
+                            ),
+                            '%h:%i %p'
+                        )
+                        <
+                        STR_TO_DATE(
+                            TRIM(
+                                SUBSTRING_INDEX(
+                                    ?,
+                                    ' - ',
+                                    1
+                                )
+                            ),
+                            '%h:%i %p'
+                        )
+
+                        OR
+
+                        (
+
+                            -- Same time slot
+                            STR_TO_DATE(
+                                TRIM(
+                                    SUBSTRING_INDEX(
+                                        r.time_slot,
+                                        ' - ',
+                                        1
+                                    )
+                                ),
+                                '%h:%i %p'
+                            )
+                            =
+                            STR_TO_DATE(
+                                TRIM(
+                                    SUBSTRING_INDEX(
+                                        ?,
+                                        ' - ',
+                                        1
+                                    )
+                                ),
+                                '%h:%i %p'
+                            )
+
+                            AND
+
+                            -- Earlier registration ID
+                            r.id <= ?
+
+                        )
+
                     )
-                )
 
-            ORDER BY
-                r.time_slot ASC,
-                r.id ASC
-        `;
+                ORDER BY
 
+                    STR_TO_DATE(
+                        TRIM(
+                            SUBSTRING_INDEX(
+                                r.time_slot,
+                                ' - ',
+                                1
+                            )
+                        ),
+                        '%h:%i %p'
+                    ) ASC,
 
-        db.query(
-            queueSql,
-            [
-                farmer.procurement_centre,
-                farmer.preferred_date,
-                farmer.time_slot,
-                farmer.time_slot,
-                farmer.token
-            ],
-            (err, queueResult) => {
-
-                if (err) {
-                    console.log("Queue calculation error:", err);
-
-                    return res.status(500).json({
-                        message: 'Database error'
-                    });
-                }
+                    r.id ASC
+            `;
 
 
-                const position = queueResult.length;
+            db.query(
+                queueSql,
+                [
+                    farmer.procurement_centre,
+                    farmer.preferred_date,
+                    farmer.time_slot,
+                    farmer.time_slot,
+                    farmer.token
+                ],
+                (err, queueResult) => {
 
+                    if (err) {
 
-                // Total active registrations
-                const totalSql = `
-                    SELECT COUNT(*) AS total
-                    FROM registrations r
+                        console.log(
+                            "Queue calculation error:",
+                            err
+                        );
 
-                    LEFT JOIN procurement p
-                        ON r.id = p.registration_id
-
-                    WHERE
-                        p.id IS NULL
-                        AND r.procurement_centre = ?
-                        AND r.preferred_date = ?
-                `;
-
-
-                db.query(
-                    totalSql,
-                    [
-                        farmer.procurement_centre,
-                        farmer.preferred_date
-                    ],
-                    (err, totalResult) => {
-
-                        if (err) {
-                            console.log("Total queue error:", err);
-
-                            return res.status(500).json({
-                                message: 'Database error'
-                            });
-                        }
-
-
-                        res.json({
-
-                            registration: farmer,
-
-                            position: position,
-
-                            total: totalResult[0].total,
-
-                            completed: false
-
+                        return res.status(500).json({
+                            message: 'Database error'
                         });
 
                     }
-                );
 
-            }
-        );
 
-    });
+                    const position =
+                        queueResult.length;
+
+
+                    // =====================================
+                    // TOTAL ACTIVE REGISTRATIONS
+                    // =====================================
+
+                    const totalSql = `
+
+                        SELECT COUNT(*) AS total
+
+                        FROM registrations r
+
+                        LEFT JOIN procurement p
+                            ON r.id = p.registration_id
+
+                        WHERE
+
+                            p.id IS NULL
+
+                            AND r.procurement_centre = ?
+
+                            AND r.preferred_date = ?
+
+                    `;
+
+
+                    db.query(
+                        totalSql,
+                        [
+                            farmer.procurement_centre,
+                            farmer.preferred_date
+                        ],
+                        (err, totalResult) => {
+
+                            if (err) {
+
+                                console.log(
+                                    "Total queue error:",
+                                    err
+                                );
+
+                                return res.status(500).json({
+                                    message: 'Database error'
+                                });
+
+                            }
+
+
+                            res.json({
+
+                                registration: farmer,
+
+                                position: position,
+
+                                total:
+                                    totalResult[0].total,
+
+                                completed: false
+
+                            });
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
 
 });
+
 
 // =====================================
 // EXPORT
