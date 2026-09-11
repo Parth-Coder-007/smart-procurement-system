@@ -120,13 +120,11 @@ body {
     font-weight: 600;
     white-space: nowrap;
     margin: 0 4px;
-
     transition:
         background-color 0.3s ease,
         transform 0.3s ease,
         box-shadow 0.3s ease,
         opacity 0.3s ease;
-
     flex-shrink: 0;
 }
 
@@ -270,6 +268,7 @@ body {
 /* SLIDE 3 */
 
 .box:nth-child(3) {
+
     background: linear-gradient(
         135deg,
         #064E40,
@@ -284,6 +283,7 @@ body {
 /* SLIDE 4 */
 
 .box:nth-child(4) {
+
     background: linear-gradient(
         135deg,
         #6B4300,
@@ -298,6 +298,7 @@ body {
 /* SLIDE 5 */
 
 .box:nth-child(5) {
+
     background: linear-gradient(
         135deg,
         #123524,
@@ -473,7 +474,6 @@ body {
     border: 1px solid #E1E8E2;
     position: relative;
     overflow: hidden;
-
     transition:
         transform 0.3s ease,
         box-shadow 0.3s ease;
@@ -594,7 +594,6 @@ body {
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-
     transition:
         background 0.3s ease,
         transform 0.3s ease;
@@ -784,6 +783,15 @@ body {
     }
 
 
+    /* =========================
+       HIDE ONLY SLIDER IMAGES
+       ========================= */
+
+    .sport {
+        display: none;
+    }
+
+
     /* HOW IT WORKS */
 
     .how {
@@ -815,4 +823,5 @@ body {
         font-size: 13px;
         line-height: 1.8;
     }
+
 }

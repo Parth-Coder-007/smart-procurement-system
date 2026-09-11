@@ -282,25 +282,6 @@ router.get('/api/farmers', (req, res) => {
 // =====================================
 // GET PROCUREMENT QUEUE
 // =====================================
-//
-// Queue priority:
-//
-// 1. Preferred Date - earliest first
-// 2. Time Slot Start Time - earliest first
-// 3. Registration ID - smaller ID first
-//
-// IMPORTANT:
-// time_slot is stored as text such as:
-//
-// "10:00 AM - 11:00 AM"
-// "2:00 PM - 3:00 PM"
-//
-// Therefore we convert the START TIME
-// into a real MySQL time before sorting.
-//
-// Any procurement record removes that
-// registration from the active queue.
-// =====================================
 
 router.get('/api/queue', (req, res) => {
 
@@ -330,6 +311,12 @@ router.get('/api/queue', (req, res) => {
             ON r.id = p.registration_id
 
         WHERE p.id IS NULL
+
+        AND NOT EXISTS (
+            SELECT 1
+            FROM skipped_registrations s
+            WHERE s.registration_id = r.id
+        )
 
         ORDER BY
 
@@ -367,6 +354,170 @@ router.get('/api/queue', (req, res) => {
             }
 
             res.json(results);
+
+        }
+    );
+
+});
+
+
+// =====================================
+// SKIP FARMER
+// =====================================
+
+router.post('/api/queue/skip', (req, res) => {
+
+    if (!req.session.govLoggedIn) {
+
+        return res.status(401).json({
+            message: 'Unauthorized'
+        });
+
+    }
+
+    const { token } = req.body;
+
+    if (!token) {
+
+        return res.status(400).json({
+            message: 'Token is required'
+        });
+
+    }
+
+
+    // =====================================
+    // CHECK PROCUREMENT
+    // =====================================
+
+    const checkSql = `
+        SELECT id
+        FROM procurement
+        WHERE registration_id = ?
+        LIMIT 1
+    `;
+
+    db.query(
+        checkSql,
+        [token],
+        (err, results) => {
+
+            if (err) {
+
+                console.log(
+                    "Check skip farmer error:",
+                    err
+                );
+
+                return res.status(500).json({
+                    message: 'Database error'
+                });
+
+            }
+
+
+            if (results.length > 0) {
+
+                return res.status(400).json({
+                    message:
+                        'This farmer has already completed procurement.'
+                });
+
+            }
+
+
+            // =====================================
+            // CHECK ALREADY SKIPPED
+            // =====================================
+
+            const checkSkippedSql = `
+                SELECT id
+                FROM skipped_registrations
+                WHERE registration_id = ?
+                LIMIT 1
+            `;
+
+            db.query(
+                checkSkippedSql,
+                [token],
+                (skipCheckErr, skipResults) => {
+
+                    if (skipCheckErr) {
+
+                        console.log(
+                            "Check skipped farmer error:",
+                            skipCheckErr
+                        );
+
+                        return res.status(500).json({
+                            message: 'Database error'
+                        });
+
+                    }
+
+
+                    if (skipResults.length > 0) {
+
+                        return res.status(400).json({
+                            message:
+                                'This farmer has already been skipped.'
+                        });
+
+                    }
+
+
+                    // =====================================
+                    // INSERT SKIPPED FARMER
+                    // =====================================
+
+                    const skipSql = `
+                        INSERT INTO skipped_registrations
+                        (registration_id)
+                        VALUES (?)
+                    `;
+
+                    db.query(
+                        skipSql,
+                        [token],
+                        (insertErr, result) => {
+
+                            if (insertErr) {
+
+                                console.log(
+                                    "Skip farmer error:",
+                                    insertErr
+                                );
+
+                                return res.status(500).json({
+                                    message:
+                                        'Failed to skip farmer'
+                                });
+
+                            }
+
+
+                            console.log(
+                                "Farmer skipped. Token:",
+                                token
+                            );
+
+
+                            res.json({
+
+                                success: true,
+
+                                message:
+                                    'Farmer skipped successfully',
+
+                                token: token
+
+                            });
+
+                        }
+                    );
+
+                }
+            );
 
         }
     );
@@ -465,10 +616,12 @@ router.get('/api/procurement', (req, res) => {
             f.name AS farmer_name,
             p.crop_type,
             p.quantity,
+            p.accepted_quantity,
+            p.rate_per_kg,
+            p.total_amount,
             p.test_result,
             p.procurement_status,
             p.payment_status,
-            p.total_amount,
             p.created_at
 
         FROM procurement p
@@ -507,6 +660,16 @@ router.get('/api/procurement', (req, res) => {
 // ==========================================
 // SAVE PROCUREMENT
 // ==========================================
+//
+// IMPORTANT:
+//
+// quantity = farmer registered quantity
+//
+// accepted_quantity = quantity actually accepted
+//
+// total_amount = accepted_quantity × rate_per_kg
+//
+// ==========================================
 
 router.post('/api/procurement', (req, res) => {
 
@@ -518,6 +681,7 @@ router.post('/api/procurement', (req, res) => {
 
     }
 
+
     const {
         token,
         farmerId,
@@ -528,14 +692,13 @@ router.post('/api/procurement', (req, res) => {
         testedQuantity,
         remarks,
         rate,
-        totalAmount,
         paymentStatus,
         procurementStatus
     } = req.body;
 
 
     // ======================================
-    // VALIDATION
+    // BASIC VALIDATION
     // ======================================
 
     if (
@@ -553,6 +716,35 @@ router.post('/api/procurement', (req, res) => {
     }
 
 
+    const registeredQuantity =
+        Number(quantity);
+
+
+    const acceptedQuantity =
+        Number(testedQuantity);
+
+
+    const ratePerKg =
+        Number(rate);
+
+
+    // ======================================
+    // VALIDATE REGISTERED QUANTITY
+    // ======================================
+
+    if (
+        isNaN(registeredQuantity) ||
+        registeredQuantity <= 0
+    ) {
+
+        return res.status(400).json({
+            message:
+                'Invalid registered quantity'
+        });
+
+    }
+
+
     // ======================================
     // VALIDATE TEST RESULT
     // ======================================
@@ -563,9 +755,15 @@ router.post('/api/procurement', (req, res) => {
         'Rejected'
     ];
 
+
+    const finalTestResult =
+        testResult || 'Pending';
+
+
     if (
-        testResult &&
-        !allowedTestResults.includes(testResult)
+        !allowedTestResults.includes(
+            finalTestResult
+        )
     ) {
 
         return res.status(400).json({
@@ -577,7 +775,7 @@ router.post('/api/procurement', (req, res) => {
 
 
     // ======================================
-    // CHECK IF ALREADY PROCESSED
+    // CHECK ALREADY PROCESSED
     // ======================================
 
     const checkSql = `
@@ -606,10 +804,6 @@ router.post('/api/procurement', (req, res) => {
             }
 
 
-            // ==================================
-            // ALREADY PROCESSED
-            // ==================================
-
             if (checkResults.length > 0) {
 
                 return res.status(400).json({
@@ -623,30 +817,31 @@ router.post('/api/procurement', (req, res) => {
 
 
             // ======================================
-            // FINAL PROCUREMENT VALUES
+            // FINAL VALUES
             // ======================================
-
-            let finalTestResult =
-                testResult || 'Pending';
 
             let finalPaymentStatus =
                 paymentStatus || 'Pending';
 
+
             let finalProcurementStatus =
                 procurementStatus || 'Processing';
 
-            let finalAcceptedQuantity =
-                testedQuantity || null;
 
-            let finalTotalAmount =
-                totalAmount || null;
+            let finalAcceptedQuantity;
+
+            let finalRate;
+
+            let finalTotalAmount;
 
 
             // ======================================
-            // REJECTED TEST RESULT
+            // REJECTED
             // ======================================
 
-            if (finalTestResult === 'Rejected') {
+            if (
+                finalTestResult === 'Rejected'
+            ) {
 
                 finalPaymentStatus =
                     'Not Paid';
@@ -657,6 +852,9 @@ router.post('/api/procurement', (req, res) => {
                 finalAcceptedQuantity =
                     0;
 
+                finalRate =
+                    null;
+
                 finalTotalAmount =
                     0;
 
@@ -664,10 +862,80 @@ router.post('/api/procurement', (req, res) => {
 
 
             // ======================================
-            // PASSED TEST RESULT
+            // PASSED
             // ======================================
 
-            if (finalTestResult === 'Passed') {
+            else if (
+                finalTestResult === 'Passed'
+            ) {
+
+                // Accepted quantity required
+
+                if (
+                    isNaN(acceptedQuantity) ||
+                    acceptedQuantity < 0
+                ) {
+
+                    return res.status(400).json({
+                        message:
+                            'Please enter a valid accepted quantity.'
+                    });
+
+                }
+
+
+                // Accepted quantity cannot exceed
+                // registered quantity
+
+                if (
+                    acceptedQuantity >
+                    registeredQuantity
+                ) {
+
+                    return res.status(400).json({
+
+                        message:
+                            'Accepted quantity cannot be greater than registered quantity.'
+
+                    });
+
+                }
+
+
+                // Rate required
+
+                if (
+                    isNaN(ratePerKg) ||
+                    ratePerKg < 0
+                ) {
+
+                    return res.status(400).json({
+                        message:
+                            'Please enter a valid rate per kg.'
+                    });
+
+                }
+
+
+                finalAcceptedQuantity =
+                    acceptedQuantity;
+
+
+                finalRate =
+                    ratePerKg;
+
+
+                // ==================================
+                // IMPORTANT
+                // TOTAL = ACCEPTED × RATE
+                // ==================================
+
+                finalTotalAmount =
+                    acceptedQuantity *
+                    ratePerKg;
+
+
+                // Procurement status
 
                 if (
                     procurementStatus === 'Completed'
@@ -684,11 +952,11 @@ router.post('/api/procurement', (req, res) => {
                 }
 
 
-                // Payment can only be Paid
-                // when procurement is Completed.
+                // Payment status
 
                 if (
-                    finalProcurementStatus === 'Completed' &&
+                    finalProcurementStatus ===
+                        'Completed' &&
                     paymentStatus === 'Paid'
                 ) {
 
@@ -706,10 +974,75 @@ router.post('/api/procurement', (req, res) => {
 
 
             // ======================================
-            // PENDING TEST RESULT
+            // PENDING
             // ======================================
 
-            if (finalTestResult === 'Pending') {
+            else {
+
+                if (
+                    !isNaN(acceptedQuantity) &&
+                    acceptedQuantity >= 0
+                ) {
+
+                    if (
+                        acceptedQuantity >
+                        registeredQuantity
+                    ) {
+
+                        return res.status(400).json({
+
+                            message:
+                                'Accepted quantity cannot be greater than registered quantity.'
+
+                        });
+
+                    }
+
+                    finalAcceptedQuantity =
+                        acceptedQuantity;
+
+                } else {
+
+                    finalAcceptedQuantity =
+                        null;
+
+                }
+
+
+                if (
+                    !isNaN(ratePerKg) &&
+                    ratePerKg >= 0
+                ) {
+
+                    finalRate =
+                        ratePerKg;
+
+                } else {
+
+                    finalRate =
+                        null;
+
+                }
+
+
+                // Calculate only if both values exist
+
+                if (
+                    finalAcceptedQuantity !== null &&
+                    finalRate !== null
+                ) {
+
+                    finalTotalAmount =
+                        finalAcceptedQuantity *
+                        finalRate;
+
+                } else {
+
+                    finalTotalAmount =
+                        null;
+
+                }
+
 
                 finalProcurementStatus =
                     'Processing';
@@ -726,6 +1059,7 @@ router.post('/api/procurement', (req, res) => {
 
             const sql = `
                 INSERT INTO procurement (
+
                     registration_id,
                     farmer_id,
                     crop_type,
@@ -738,6 +1072,7 @@ router.post('/api/procurement', (req, res) => {
                     total_amount,
                     payment_status,
                     procurement_status
+
                 )
 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -752,7 +1087,7 @@ router.post('/api/procurement', (req, res) => {
 
                 crop,
 
-                quantity,
+                registeredQuantity,
 
                 quality || null,
 
@@ -762,7 +1097,7 @@ router.post('/api/procurement', (req, res) => {
 
                 remarks || null,
 
-                rate || null,
+                finalRate,
 
                 finalTotalAmount,
 
@@ -799,6 +1134,30 @@ router.post('/api/procurement', (req, res) => {
                     );
 
 
+                    console.log(
+                        "Registered Quantity:",
+                        registeredQuantity
+                    );
+
+
+                    console.log(
+                        "Accepted Quantity:",
+                        finalAcceptedQuantity
+                    );
+
+
+                    console.log(
+                        "Rate:",
+                        finalRate
+                    );
+
+
+                    console.log(
+                        "Total Amount:",
+                        finalTotalAmount
+                    );
+
+
                     res.json({
 
                         message:
@@ -809,6 +1168,18 @@ router.post('/api/procurement', (req, res) => {
 
                         testResult:
                             finalTestResult,
+
+                        registeredQuantity:
+                            registeredQuantity,
+
+                        acceptedQuantity:
+                            finalAcceptedQuantity,
+
+                        ratePerKg:
+                            finalRate,
+
+                        totalAmount:
+                            finalTotalAmount,
 
                         procurementStatus:
                             finalProcurementStatus,
@@ -872,6 +1243,12 @@ router.get('/api/dashboard', (req, res) => {
 
         WHERE p.id IS NULL
 
+        AND NOT EXISTS (
+            SELECT 1
+            FROM skipped_registrations s
+            WHERE s.registration_id = r.id
+        )
+
     `;
 
 
@@ -914,6 +1291,12 @@ router.get('/api/dashboard', (req, res) => {
 
         WHERE p.id IS NULL
 
+        AND NOT EXISTS (
+            SELECT 1
+            FROM skipped_registrations s
+            WHERE s.registration_id = r.id
+        )
+
         ORDER BY
 
             r.preferred_date ASC,
@@ -949,14 +1332,15 @@ router.get('/api/dashboard', (req, res) => {
                 console.log(err);
 
                 return res.status(500).json({
-                    message: 'Database error'
+                    message:
+                        'Database error'
                 });
 
             }
 
 
             // ==================================
-            // RUN WAITING QUERY
+            // WAITING
             // ==================================
 
             db.query(
@@ -968,14 +1352,15 @@ router.get('/api/dashboard', (req, res) => {
                         console.log(err);
 
                         return res.status(500).json({
-                            message: 'Database error'
+                            message:
+                                'Database error'
                         });
 
                     }
 
 
                     // ==================================
-                    // RUN COMPLETED QUERY
+                    // COMPLETED
                     // ==================================
 
                     db.query(
@@ -995,7 +1380,7 @@ router.get('/api/dashboard', (req, res) => {
 
 
                             // ==================================
-                            // RUN CURRENT QUEUE QUERY
+                            // CURRENT QUEUE
                             // ==================================
 
                             db.query(
@@ -1013,10 +1398,6 @@ router.get('/api/dashboard', (req, res) => {
 
                                     }
 
-
-                                    // ==================================
-                                    // CONVERT DATABASE VALUES
-                                    // ==================================
 
                                     const farmersToday =
                                         Number(
@@ -1065,7 +1446,7 @@ router.get('/api/dashboard', (req, res) => {
 
 
                                     // ==================================
-                                    // SEND DASHBOARD DATA
+                                    // RESPONSE
                                     // ==================================
 
                                     res.json({

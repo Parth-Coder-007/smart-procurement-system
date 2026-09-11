@@ -191,6 +191,10 @@
                 <div class="queue-actions">
 
 
+                    <!-- =========================
+                         START PROCUREMENT
+                    ========================== -->
+
                     <a
                         id="startProcurementBtn"
                         href="/gov/procurement"
@@ -200,12 +204,16 @@
                     </a>
 
 
+                    <!-- =========================
+                         SKIP FARMER
+                    ========================== -->
+
                     <button
                         id="nextFarmerBtn"
                         class="primary-btn"
                         onclick="nextFarmer()"
                     >
-                        Next Farmer →
+                        Skip Farmer →
                     </button>
 
                 </div>
@@ -294,13 +302,17 @@
     <script>
 
 
+        // =========================================
+        // QUEUE DATA
+        // =========================================
+
         let queueData = [];
 
 
 
-        /* =========================================
-           LOAD QUEUE FROM DATABASE
-        ========================================= */
+        // =========================================
+        // LOAD QUEUE FROM DATABASE
+        // =========================================
 
         async function loadQueue() {
 
@@ -367,9 +379,9 @@
 
 
 
-        /* =========================================
-           DISPLAY QUEUE
-        ========================================= */
+        // =========================================
+        // DISPLAY QUEUE
+        // =========================================
 
         function displayQueue() {
 
@@ -383,9 +395,9 @@
 
 
 
-            /* =====================================
-               NO FARMERS
-            ===================================== */
+            // =====================================
+            // NO FARMERS
+            // =====================================
 
             if (
                 !Array.isArray(queueData) ||
@@ -437,9 +449,9 @@
 
 
 
-            /* =====================================
-               CURRENT FARMER
-            ===================================== */
+            // =====================================
+            // CURRENT FARMER
+            // =====================================
 
             const current =
                 queueData[0];
@@ -469,9 +481,9 @@
 
 
 
-            /* =====================================
-               START PROCUREMENT
-            ===================================== */
+            // =====================================
+            // START PROCUREMENT
+            // =====================================
 
             const procurementButton =
                 document.getElementById(
@@ -485,13 +497,15 @@
 
             procurementButton.href =
                 "/gov/procurement?token=" +
-                encodeURIComponent(current.token);
+                encodeURIComponent(
+                    current.token
+                );
 
 
 
-            /* =====================================
-               NEXT FARMER BUTTON
-            ===================================== */
+            // =====================================
+            // SKIP FARMER BUTTON
+            // =====================================
 
             const nextButton =
                 document.getElementById(
@@ -504,9 +518,9 @@
 
 
 
-            /* =====================================
-               WAITING FARMERS
-            ===================================== */
+            // =====================================
+            // WAITING FARMERS
+            // =====================================
 
             const waitingFarmers =
                 queueData.slice(1);
@@ -535,15 +549,17 @@
 
 
 
-            /* =====================================
-               DISPLAY WAITING FARMERS
-            ===================================== */
+            // =====================================
+            // DISPLAY WAITING FARMERS
+            // =====================================
 
             waitingFarmers.forEach(
                 farmer => {
 
                     const row =
-                        document.createElement("tr");
+                        document.createElement(
+                            "tr"
+                        );
 
 
                     row.innerHTML = `
@@ -586,11 +602,93 @@
 
 
 
-        /* =========================================
-           NEXT FARMER
-        ========================================= */
+        // =========================================
+        // REDUCE ESTIMATED TIME
+        // =========================================
+        //
+        // This function is called ONLY when
+        // the officer skips a farmer.
+        //
+        // It is NOT called after procurement.
+        //
+        // =========================================
+
+        function reduceEstimatedTime() {
+
+            const estimatedTimePerFarmer =
+                Number(
+                    localStorage.getItem(
+                        'estimatedTimePerFarmer'
+                    )
+                ) || 10;
+
+
+            let remainingEstimatedTime =
+                Number(
+                    localStorage.getItem(
+                        'remainingEstimatedTime'
+                    )
+                );
+
+
+            // =====================================
+            // INITIAL VALUE
+            // =====================================
+
+            if (
+                isNaN(
+                    remainingEstimatedTime
+                )
+            ) {
+
+                remainingEstimatedTime =
+                    queueData.length *
+                    estimatedTimePerFarmer;
+
+            }
+
+
+            // =====================================
+            // REDUCE ONE FARMER
+            // =====================================
+
+            remainingEstimatedTime =
+                Math.max(
+                    remainingEstimatedTime -
+                    estimatedTimePerFarmer,
+                    0
+                );
+
+
+            // =====================================
+            // SAVE NEW VALUE
+            // =====================================
+
+            localStorage.setItem(
+                'remainingEstimatedTime',
+                remainingEstimatedTime
+            );
+
+
+            console.log(
+                "Estimated time reduced to:",
+                remainingEstimatedTime,
+                "minutes"
+            );
+
+        }
+
+
+
+        // =========================================
+        // SKIP CURRENT FARMER
+        // =========================================
 
         async function nextFarmer() {
+
+            // =====================================
+            // CHECK QUEUE
+            // =====================================
 
             if (
                 !Array.isArray(queueData) ||
@@ -610,21 +708,15 @@
                 queueData[0];
 
 
-            /*
-             * IMPORTANT:
-             *
-             * Next Farmer does NOT directly delete
-             * the farmer.
-             *
-             * The farmer is removed from the queue
-             * only after procurement is saved.
-             */
 
+            // =====================================
+            // CONFIRM SKIP
+            // =====================================
 
-            const confirmNext =
+            const confirmSkip =
                 confirm(
 
-                    "Have you completed procurement for this farmer?\n\n" +
+                    "Do you want to skip this farmer?\n\n" +
 
                     "Farmer: " +
                     current.name +
@@ -632,67 +724,190 @@
                     "\nToken: #" +
                     current.token +
 
-                    "\n\nClick OK to check for the next farmer."
+                    "\n\n" +
+
+                    "The farmer will be removed from the queue " +
+                    "and the estimated time will be reduced."
 
                 );
 
 
-            if (!confirmNext) {
+            // =====================================
+            // USER CLICKED NO
+            // =====================================
+
+            if (!confirmSkip) {
 
                 return;
 
             }
 
 
-            /*
-             * Reload latest data from MySQL.
-             */
 
-            await loadQueue();
+            // =====================================
+            // DISABLE BUTTON
+            // =====================================
 
-
-            /*
-             * Check whether the same farmer is
-             * still at the front.
-             */
-
-            if (
-                queueData.length > 0 &&
-                String(queueData[0].token) ===
-                String(current.token)
-            ) {
-
-                alert(
-
-                    "This farmer is still in the queue.\n\n" +
-
-                    "Please complete and save the procurement first."
-
+            const skipButton =
+                document.getElementById(
+                    'nextFarmerBtn'
                 );
 
-                return;
+
+            skipButton.disabled = true;
+
+
+            skipButton.textContent =
+                "Skipping...";
+
+
+
+            // =====================================
+            // SEND SKIP REQUEST
+            // =====================================
+
+            try {
+
+                const response =
+                    await fetch(
+                        '/gov/api/queue/skip',
+                        {
+                            method: 'POST',
+
+                            headers: {
+                                'Content-Type':
+                                    'application/json'
+                            },
+
+                            body: JSON.stringify({
+                                token:
+                                    current.token
+                            })
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+
+                // =================================
+                // SERVER ERROR
+                // =================================
+
+                if (!response.ok) {
+
+                    alert(
+                        result.message ||
+                        "Failed to skip farmer."
+                    );
+
+                    return;
+
+                }
+
+
+
+                // =================================
+                // SUCCESS
+                // =================================
+
+                console.log(
+                    "Farmer skipped successfully:",
+                    current.token
+                );
+
+
+
+                // =================================
+                // REDUCE TIME
+                // =================================
+                //
+                // IMPORTANT:
+                //
+                // This happens ONLY after
+                // successful skip.
+                //
+                // Procurement completion does
+                // NOT call this function.
+                //
+                // =================================
+
+                reduceEstimatedTime();
+
+
+
+                // =================================
+                // LOAD NEXT FARMER
+                // =================================
+
+                await loadQueue();
+
+
+
+                // =================================
+                // SHOW NEXT FARMER
+                // =================================
+
+                if (
+                    queueData.length > 0
+                ) {
+
+                    alert(
+
+                        "Farmer skipped successfully.\n\n" +
+
+                        "Next farmer is now being served:\n\n" +
+
+                        queueData[0].name +
+
+                        "\nToken: #" +
+                        queueData[0].token
+
+                    );
+
+                }
+                else {
+
+                    alert(
+
+                        "Farmer skipped successfully.\n\n" +
+
+                        "No more farmers are waiting."
+
+                    );
+
+                }
 
             }
 
 
-            /*
-             * If token disappeared, database
-             * procurement was completed and the
-             * next farmer is now displayed.
-             */
+            catch (error) {
 
-            if (queueData.length > 0) {
+                console.log(
+                    "Skip farmer error:",
+                    error
+                );
+
 
                 alert(
-
-                    "Next farmer is now being served:\n\n" +
-
-                    queueData[0].name +
-
-                    "\nToken: #" +
-                    queueData[0].token
-
+                    "Unable to skip farmer. Please try again."
                 );
+
+            }
+
+
+            finally {
+
+                // =================================
+                // ENABLE BUTTON AGAIN
+                // =================================
+
+                skipButton.disabled = false;
+
+                skipButton.textContent =
+                    "Skip Farmer →";
 
             }
 
@@ -700,16 +915,19 @@
 
 
 
-        /* =========================================
-           AUTO REFRESH
-        ========================================= */
-
-        /*
-         * Check MySQL every 3 seconds.
-         *
-         * When procurement is completed,
-         * the farmer disappears automatically.
-         */
+        // =========================================
+        // AUTO REFRESH
+        // =========================================
+        //
+        // Check database every 3 seconds.
+        //
+        // If procurement is completed from
+        // procurement.html, the farmer disappears
+        // automatically and the next farmer appears.
+        //
+        // NO estimated-time reduction happens here.
+        //
+        // =========================================
 
         setInterval(
             loadQueue,
@@ -718,9 +936,9 @@
 
 
 
-        /* =========================================
-           INITIAL LOAD
-        ========================================= */
+        // =========================================
+        // INITIAL LOAD
+        // =========================================
 
         loadQueue();
 

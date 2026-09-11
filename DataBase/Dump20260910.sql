@@ -160,3 +160,12 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-09-10 23:04:23
+CREATE TABLE skipped_registrations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    registration_id INT NOT NULL UNIQUE,
+    skipped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (registration_id)
+        REFERENCES registrations(id)
+        ON DELETE CASCADE
+);
