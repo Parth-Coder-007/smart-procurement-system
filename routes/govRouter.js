@@ -21,7 +21,6 @@ const db = mysql.createPool({
 });
 
 
-
 // =====================================
 // GOVERNMENT DASHBOARD
 // =====================================
@@ -33,7 +32,13 @@ router.get('/', (req, res) => {
     }
 
     res.sendFile(
-        path.join(__dirname, '..', 'view', 'gov portal', 'index.html')
+        path.join(
+            __dirname,
+            '..',
+            'view',
+            'gov portal',
+            'index.html'
+        )
     );
 
 });
@@ -46,7 +51,13 @@ router.get('/', (req, res) => {
 router.get('/login', (req, res) => {
 
     res.sendFile(
-        path.join(__dirname, '..', 'view', 'gov portal', 'login.html')
+        path.join(
+            __dirname,
+            '..',
+            'view',
+            'gov portal',
+            'login.html'
+        )
     );
 
 });
@@ -67,35 +78,48 @@ router.post('/login', (req, res) => {
         AND password = ?
     `;
 
-    db.query(sql, [officerId, password], (err, results) => {
+    db.query(
+        sql,
+        [officerId, password],
+        (err, results) => {
 
-        if (err) {
+            if (err) {
 
-            console.log(err);
+                console.log(
+                    "Government login error:",
+                    err
+                );
 
-            return res.send('Database error');
+                return res.send(
+                    'Database error'
+                );
+
+            }
+
+            if (results.length > 0) {
+
+                req.session.govLoggedIn = true;
+
+                req.session.govOfficerId =
+                    results[0].officer_id;
+
+                req.session.govName =
+                    results[0].name;
+
+                console.log(
+                    "Government login successful"
+                );
+
+                return res.redirect('/gov');
+
+            }
+
+            res.send(
+                'Invalid Officer ID or Password'
+            );
 
         }
-
-        if (results.length > 0) {
-
-            req.session.govLoggedIn = true;
-
-            req.session.govOfficerId =
-                results[0].officer_id;
-
-            req.session.govName =
-                results[0].name;
-
-            console.log("Government login successful");
-
-            return res.redirect('/gov');
-
-        }
-
-        res.send('Invalid Officer ID or Password');
-
-    });
+    );
 
 });
 
@@ -197,8 +221,11 @@ router.get('/settings', (req, res) => {
 // =====================================
 
 router.get('/logout', (req, res) => {
+
     req.session = null;
+
     res.redirect('/gov/login');
+
 });
 
 
@@ -227,21 +254,27 @@ router.get('/api/farmers', (req, res) => {
         ORDER BY id DESC
     `;
 
-    db.query(sql, (err, results) => {
+    db.query(
+        sql,
+        (err, results) => {
 
-        if (err) {
+            if (err) {
 
-            console.log(err);
+                console.log(
+                    "Get farmers error:",
+                    err
+                );
 
-            return res.status(500).json({
-                message: 'Database error'
-            });
+                return res.status(500).json({
+                    message: 'Database error'
+                });
+
+            }
+
+            res.json(results);
 
         }
-
-        res.json(results);
-
-    });
+    );
 
 });
 
@@ -253,11 +286,20 @@ router.get('/api/farmers', (req, res) => {
 // Queue priority:
 //
 // 1. Preferred Date - earliest first
-// 2. Preferred Time - earliest first
-// 3. Token Number - smaller token first
+// 2. Time Slot Start Time - earliest first
+// 3. Registration ID - smaller ID first
 //
-// Any procurement record, including
-// Rejected records, is removed from queue.
+// IMPORTANT:
+// time_slot is stored as text such as:
+//
+// "10:00 AM - 11:00 AM"
+// "2:00 PM - 3:00 PM"
+//
+// Therefore we convert the START TIME
+// into a real MySQL time before sorting.
+//
+// Any procurement record removes that
+// registration from the active queue.
 // =====================================
 
 router.get('/api/queue', (req, res) => {
@@ -278,36 +320,56 @@ router.get('/api/queue', (req, res) => {
             r.product_weight,
             r.preferred_date,
             r.time_slot
+
         FROM registrations r
+
         JOIN farmers f
             ON r.farmer_id = f.id
+
         LEFT JOIN procurement p
             ON r.id = p.registration_id
+
         WHERE p.id IS NULL
+
         ORDER BY
+
             r.preferred_date ASC,
-            r.time_slot ASC,
+
+            STR_TO_DATE(
+                TRIM(
+                    SUBSTRING_INDEX(
+                        r.time_slot,
+                        ' - ',
+                        1
+                    )
+                ),
+                '%h:%i %p'
+            ) ASC,
+
             r.id ASC
     `;
 
-    db.query(sql, (err, results) => {
+    db.query(
+        sql,
+        (err, results) => {
 
-        if (err) {
+            if (err) {
 
-            console.log(
-                "Queue database error:",
-                err
-            );
+                console.log(
+                    "Queue database error:",
+                    err
+                );
 
-            return res.status(500).json({
-                message: 'Database error'
-            });
+                return res.status(500).json({
+                    message: 'Database error'
+                });
+
+            }
+
+            res.json(results);
 
         }
-
-        res.json(results);
-
-    });
+    );
 
 });
 
@@ -338,38 +400,46 @@ router.get('/api/procurement/:token', (req, res) => {
             r.product_weight,
             r.preferred_date,
             r.time_slot
+
         FROM registrations r
+
         JOIN farmers f
             ON r.farmer_id = f.id
+
         WHERE r.id = ?
     `;
 
-    db.query(sql, [token], (err, results) => {
+    db.query(
+        sql,
+        [token],
+        (err, results) => {
 
-        if (err) {
+            if (err) {
 
-            console.log(
-                "Procurement farmer error:",
-                err
-            );
+                console.log(
+                    "Procurement farmer error:",
+                    err
+                );
 
-            return res.status(500).json({
-                message: 'Database error'
-            });
+                return res.status(500).json({
+                    message: 'Database error'
+                });
+
+            }
+
+            if (results.length === 0) {
+
+                return res.status(404).json({
+                    message:
+                        'Farmer registration not found'
+                });
+
+            }
+
+            res.json(results[0]);
 
         }
-
-        if (results.length === 0) {
-
-            return res.status(404).json({
-                message: 'Farmer registration not found'
-            });
-
-        }
-
-        res.json(results[0]);
-
-    });
+    );
 
 });
 
@@ -400,30 +470,36 @@ router.get('/api/procurement', (req, res) => {
             p.payment_status,
             p.total_amount,
             p.created_at
+
         FROM procurement p
+
         JOIN farmers f
             ON p.farmer_id = f.id
+
         ORDER BY p.id DESC
     `;
 
-    db.query(sql, (err, results) => {
+    db.query(
+        sql,
+        (err, results) => {
 
-        if (err) {
+            if (err) {
 
-            console.log(
-                "Recent procurement error:",
-                err
-            );
+                console.log(
+                    "Recent procurement error:",
+                    err
+                );
 
-            return res.status(500).json({
-                message: 'Database error'
-            });
+                return res.status(500).json({
+                    message: 'Database error'
+                });
+
+            }
+
+            res.json(results);
 
         }
-
-        res.json(results);
-
-    });
+    );
 
 });
 
@@ -462,10 +538,16 @@ router.post('/api/procurement', (req, res) => {
     // VALIDATION
     // ======================================
 
-    if (!token || !farmerId || !crop || !quantity) {
+    if (
+        !token ||
+        !farmerId ||
+        !crop ||
+        !quantity
+    ) {
 
         return res.status(400).json({
-            message: 'Required details are missing'
+            message:
+                'Required details are missing'
         });
 
     }
@@ -487,7 +569,8 @@ router.post('/api/procurement', (req, res) => {
     ) {
 
         return res.status(400).json({
-            message: 'Invalid test result'
+            message:
+                'Invalid test result'
         });
 
     }
@@ -542,19 +625,6 @@ router.post('/api/procurement', (req, res) => {
             // ======================================
             // FINAL PROCUREMENT VALUES
             // ======================================
-            //
-            // IMPORTANT:
-            //
-            // If test result is Rejected:
-            //
-            // Procurement Status = Rejected
-            // Payment Status     = Not Paid
-            // Accepted Quantity  = 0
-            // Total Amount       = 0
-            //
-            // The values sent by the frontend
-            // cannot override these rules.
-            // ======================================
 
             let finalTestResult =
                 testResult || 'Pending';
@@ -598,14 +668,6 @@ router.post('/api/procurement', (req, res) => {
             // ======================================
 
             if (finalTestResult === 'Passed') {
-
-                // If procurement is completed,
-                // payment can be processed.
-                //
-                // If frontend sends "Completed",
-                // keep it.
-                //
-                // Otherwise default to Processing.
 
                 if (
                     procurementStatus === 'Completed'
@@ -664,7 +726,6 @@ router.post('/api/procurement', (req, res) => {
 
             const sql = `
                 INSERT INTO procurement (
-
                     registration_id,
                     farmer_id,
                     crop_type,
@@ -677,7 +738,6 @@ router.post('/api/procurement', (req, res) => {
                     total_amount,
                     payment_status,
                     procurement_status
-
                 )
 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -687,16 +747,27 @@ router.post('/api/procurement', (req, res) => {
             const values = [
 
                 token,
+
                 farmerId,
+
                 crop,
+
                 quantity,
+
                 quality || null,
+
                 finalTestResult,
+
                 finalAcceptedQuantity,
+
                 remarks || null,
+
                 rate || null,
+
                 finalTotalAmount,
+
                 finalPaymentStatus,
+
                 finalProcurementStatus
 
             ];
@@ -844,8 +915,20 @@ router.get('/api/dashboard', (req, res) => {
         WHERE p.id IS NULL
 
         ORDER BY
+
             r.preferred_date ASC,
-            r.time_slot ASC,
+
+            STR_TO_DATE(
+                TRIM(
+                    SUBSTRING_INDEX(
+                        r.time_slot,
+                        ' - ',
+                        1
+                    )
+                ),
+                '%h:%i %p'
+            ) ASC,
+
             r.id ASC
 
         LIMIT 1
@@ -904,7 +987,8 @@ router.get('/api/dashboard', (req, res) => {
                                 console.log(err);
 
                                 return res.status(500).json({
-                                    message: 'Database error'
+                                    message:
+                                        'Database error'
                                 });
 
                             }
@@ -939,10 +1023,12 @@ router.get('/api/dashboard', (req, res) => {
                                             todayResult[0].count
                                         );
 
+
                                     const currentlyWaiting =
                                         Number(
                                             waitingResult[0].count
                                         );
+
 
                                     const completed =
                                         Number(
@@ -954,7 +1040,9 @@ router.get('/api/dashboard', (req, res) => {
                                     // DAILY CAPACITY
                                     // ==================================
 
-                                    const dailyCapacity = 300;
+                                    const dailyCapacity =
+                                        300;
+
 
                                     const remaining =
                                         Math.max(
@@ -962,6 +1050,7 @@ router.get('/api/dashboard', (req, res) => {
                                             farmersToday,
                                             0
                                         );
+
 
                                     const capacityPercent =
                                         Math.min(
@@ -1026,8 +1115,8 @@ router.get('/api/dashboard', (req, res) => {
 });
 
 
-// ==========================================
+// =====================================
 // EXPORT ROUTER
-// ==========================================
+// =====================================
 
 module.exports = router;
